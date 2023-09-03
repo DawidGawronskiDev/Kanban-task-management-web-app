@@ -1,4 +1,4 @@
-import { renderColumns } from "../utils/renderUtils";
+import { renderColumns } from "../../utils/renderUtils";
 import Data from "../../data.json";
 
 const BoardListItem = (field) => {
