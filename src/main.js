@@ -155,12 +155,29 @@ const createTaskDetail = (task, board) => {
         statusDropdownOptions.appendChild(statusDropdownOption)
 
         statusDropdownOption.addEventListener("click", (e) => {
-            statusDropdownTitle.innerHTML = e.target.innerHTML;
-        })
+            const newStatus = e.target.innerHTML;
+            if (newStatus !== task.status) {
+              handleTaskStatusChange(task.id, newStatus, board);
+            }
+          });
     })
 
     return taskDetailElement;
 }
+
+const handleTaskStatusChange = (taskId, newStatus, board) => {
+    for (const column of board.columns) {
+      const taskIndex = column.tasks.findIndex(task => task.id === taskId);
+      if (taskIndex !== -1) {
+        const task = column.tasks.splice(taskIndex, 1)[0];
+        task.status = newStatus;
+        const targetColumn = board.columns.find(col => col.name === newStatus);
+        targetColumn.tasks.push(task);
+        renderBoardList(board);
+        break;
+      }
+    }
+  };
 
 root.appendChild(createBoardList(Data.boards));
 root.appendChild(createBoard(Data.boards[0]));
