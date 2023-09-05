@@ -313,6 +313,10 @@ const createTaskEdit = (task, board) => {
   taskSave.innerHTML = "Save Changes";
   taskEditElement.appendChild(taskSave);
 
+  taskSave.addEventListener("click", (e) => {
+    handleTaskSave(task.id, board);
+  });
+
   console.log(task);
 
   return taskEditElement;
@@ -335,6 +339,41 @@ const handleTaskStatusChange = (taskId, newStatus, board) => {
 const handleSubtaskDelete = (subtaskIndex, task, board) => {
   task.subtasks.splice(subtaskIndex, 1);
   root.appendChild(createTaskEdit(task, board));
+};
+
+const handleTaskSave = (taskId, board) => {
+  const editedTask = document.querySelector(".task-edit");
+  const titleInput = editedTask.querySelector(".title-container-input");
+  const descriptionInput = editedTask.querySelector(
+    ".description-container-input"
+  );
+  const statusDropdownTitle = editedTask.querySelector(
+    ".status-dropdown-title"
+  );
+
+  const editedTaskData = {
+    title: titleInput.value,
+    description: descriptionInput.value,
+    status: statusDropdownTitle.innerHTML,
+    subtasks: [],
+  };
+
+  const subtaskInputs = editedTask.querySelectorAll(".subtask-input");
+  subtaskInputs.forEach((subtaskInput) => {
+    editedTaskData.subtasks.push({
+      title: subtaskInput.value,
+      isCompleted: false, // By default, subtasks are not completed
+    });
+  });
+
+  for (const column of board.columns) {
+    const taskIndex = column.tasks.findIndex((task) => task.id === taskId);
+    if (taskIndex !== -1) {
+      column.tasks[taskIndex] = editedTaskData;
+      root.appendChild(createBoard(board));
+      break;
+    }
+  }
 };
 
 window.addEventListener("keydown", (e) => {
