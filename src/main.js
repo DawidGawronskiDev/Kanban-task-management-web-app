@@ -20,8 +20,9 @@ const createBoardList = (boards) => {
     boardList.appendChild(listElement);
 
     listElement.addEventListener("click", () => {
-      renderBoardList(board);
-      console.log(board);
+      const boardElement = document.querySelector(".board-element");
+      boardElement.remove();
+      createBoard(board);
     });
   });
 
@@ -63,11 +64,6 @@ const createBoard = (board) => {
   return boardElement;
 };
 
-const renderBoardList = (board) => {
-  const boardElement = document.querySelector(".board-element");
-  boardElement.innerHTML = createBoard(board).innerHTML;
-};
-
 const createTaskDetail = (task, board) => {
     const popup = document.querySelector(".popup");
 
@@ -75,24 +71,31 @@ const createTaskDetail = (task, board) => {
     const taskDetailElement = document.createElement("div");
     taskDetailElement.classList.add("task-detail", "popup");
 
+    const taskTitleContainer = document.createElement("div");
+    taskTitleContainer.classList.add("task-title-container");
+    taskDetailElement.appendChild(taskTitleContainer);
+
     const taskTitle = document.createElement("span");
     taskTitle.classList.add("heading-l");
     taskTitle.innerHTML = task.title;
-    taskDetailElement.appendChild(taskTitle);
+    taskTitleContainer.appendChild(taskTitle);
+
+    const taskOptions = document.createElement("button");
+    taskOptions.classList.add("task-options");
 
     const taskDescription = document.createElement("span");
     taskDescription.classList.add("body-l");
     taskDescription.innerHTML = task.description;
     taskDetailElement.appendChild(taskDescription);
 
-    const subtasksTitle = document.createElement("span");
-    subtasksTitle.classList.add("body-m");
-    subtasksTitle.innerHTML = "Subtasks";
-    taskDetailElement.appendChild(subtasksTitle);
-
     const subtaskContainer = document.createElement("div");
     subtaskContainer.classList.add("subtask-container");
     taskDetailElement.appendChild(subtaskContainer);
+
+    const subtasksTitle = document.createElement("span");
+    subtasksTitle.classList.add("subtask-title", "body-m");
+    subtasksTitle.innerHTML = "Subtasks";
+    subtaskContainer.appendChild(subtasksTitle);
 
     task.subtasks.forEach(subtask => {
         const subtaskContainerItem = document.createElement("div");
@@ -144,10 +147,6 @@ const createTaskDetail = (task, board) => {
     statusDropdownOptions.dataset.visible = false;
     statusDropdown.appendChild(statusDropdownOptions);
 
-    statusDropdown.addEventListener("click", (e) => {
-        statusDropdownOptions.dataset.visible = true;
-    })
-
     board.columns.forEach(column => {
         const statusDropdownOption = document.createElement("li");
         statusDropdownOption.classList.add("status-dropdown-option");
@@ -157,6 +156,7 @@ const createTaskDetail = (task, board) => {
         statusDropdownOption.addEventListener("click", (e) => {
             const newStatus = e.target.innerHTML;
             if (newStatus !== task.status) {
+                statusDropdownTitle.innerHTML = newStatus;
               handleTaskStatusChange(task.id, newStatus, board);
             }
           });
@@ -178,6 +178,10 @@ const handleTaskStatusChange = (taskId, newStatus, board) => {
       }
     }
   };
+
+  window.addEventListener("keydown", (e) => {
+    if (document.querySelector(".popup") && e.code === "KeyX") document.querySelector(".popup").remove(); 
+  })
 
 root.appendChild(createBoardList(Data.boards));
 root.appendChild(createBoard(Data.boards[0]));
