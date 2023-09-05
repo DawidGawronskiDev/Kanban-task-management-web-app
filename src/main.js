@@ -54,7 +54,7 @@ const createBoard = (board) => {
 
       columnElement.appendChild(taskElement);
 
-      taskElement.addEventListener("click", () => console.log(task));
+      taskElement.addEventListener("click", (e) => root.appendChild(createTaskDetail(task, board)));
     });
 
     boardElement.appendChild(columnElement);
@@ -67,6 +67,100 @@ const renderBoardList = (board) => {
   const boardElement = document.querySelector(".board-element");
   boardElement.innerHTML = createBoard(board).innerHTML;
 };
+
+const createTaskDetail = (task, board) => {
+    const popup = document.querySelector(".popup");
+
+    if (popup) popup.remove();
+    const taskDetailElement = document.createElement("div");
+    taskDetailElement.classList.add("task-detail", "popup");
+
+    const taskTitle = document.createElement("span");
+    taskTitle.classList.add("heading-l");
+    taskTitle.innerHTML = task.title;
+    taskDetailElement.appendChild(taskTitle);
+
+    const taskDescription = document.createElement("span");
+    taskDescription.classList.add("body-l");
+    taskDescription.innerHTML = task.description;
+    taskDetailElement.appendChild(taskDescription);
+
+    const subtasksTitle = document.createElement("span");
+    subtasksTitle.classList.add("body-m");
+    subtasksTitle.innerHTML = "Subtasks";
+    taskDetailElement.appendChild(subtasksTitle);
+
+    const subtaskContainer = document.createElement("div");
+    subtaskContainer.classList.add("subtask-container");
+    taskDetailElement.appendChild(subtaskContainer);
+
+    task.subtasks.forEach(subtask => {
+        const subtaskContainerItem = document.createElement("div");
+        subtaskContainerItem.classList.add("subtask-container-item");
+        subtaskContainerItem.dataset.isCompleted = subtask.isCompleted;
+        subtaskContainer.appendChild(subtaskContainerItem);
+
+        const subtaskCheckbox = document.createElement("input");
+        subtaskCheckbox.type = "checkbox";
+        if (subtask.isCompleted) subtaskCheckbox.checked = true;
+        subtaskContainerItem.appendChild(subtaskCheckbox)
+
+       subtaskCheckbox.addEventListener("click", (e) => {
+        e.target.checked === true
+        ? subtask.isCompleted = true
+        : subtask.isCompleted = false
+
+        subtaskContainerItem.dataset.isCompleted = e.target.checked;
+
+        console.log(subtask)
+       })
+
+       const taskLabel = document.createElement("label");
+        taskLabel.classList.add("task-label");
+        taskLabel.innerHTML = task.title;
+        subtaskContainerItem.appendChild(taskLabel)
+    })
+
+    const statusContainer = document.createElement("div");
+    statusContainer.classList.add("status-container");
+    taskDetailElement.appendChild(statusContainer);
+
+    const statusTitle = document.createElement("span");
+    statusTitle.classList.add("body-m");
+    statusTitle.innerHTML = "CurrentStatus";
+    statusContainer.appendChild(statusTitle);
+
+    const statusDropdown = document.createElement("div");
+    statusDropdown.classList.add("dropdown");
+    statusContainer.appendChild(statusDropdown);
+
+    const statusDropdownTitle = document.createElement("span");
+    statusDropdownTitle.classList.add("status-dropdown-title");
+    statusDropdownTitle.innerHTML = task.status;
+    statusDropdown.appendChild(statusDropdownTitle);
+
+    const statusDropdownOptions = document.createElement("ul");
+    statusDropdownOptions.classList.add("status-dropdown-options");
+    statusDropdownOptions.dataset.visible = false;
+    statusDropdown.appendChild(statusDropdownOptions);
+
+    statusDropdown.addEventListener("click", (e) => {
+        statusDropdownOptions.dataset.visible = true;
+    })
+
+    board.columns.forEach(column => {
+        const statusDropdownOption = document.createElement("li");
+        statusDropdownOption.classList.add("status-dropdown-option");
+        statusDropdownOption.innerHTML = column.name;
+        statusDropdownOptions.appendChild(statusDropdownOption)
+
+        statusDropdownOption.addEventListener("click", (e) => {
+            statusDropdownTitle.innerHTML = e.target.innerHTML;
+        })
+    })
+
+    return taskDetailElement;
+}
 
 root.appendChild(createBoardList(Data.boards));
 root.appendChild(createBoard(Data.boards[0]));
