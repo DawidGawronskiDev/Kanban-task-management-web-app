@@ -255,6 +255,14 @@ const createTaskEdit = (task, board) => {
     const subtaskDelete = document.createElement("button");
     subtaskDelete.classList.add("subtask-delete");
     subtaskContainer.appendChild(subtaskDelete);
+
+    subtaskDelete.addEventListener("click", (e) => {
+      const subtaskContainerItem = e.target.parentElement;
+      const subtaskIndex = Array.from(
+        subtaskContainerItem.parentElement.children
+      ).indexOf(subtaskContainerItem);
+      handleSubtaskDelete(subtaskIndex, task, board);
+    });
   });
 
   const subtasksAdd = document.createElement("button");
@@ -322,6 +330,11 @@ const handleTaskStatusChange = (taskId, newStatus, board) => {
       break;
     }
   }
+};
+
+const handleSubtaskDelete = (subtaskIndex, task, board) => {
+  task.subtasks.splice(subtaskIndex, 1);
+  root.appendChild(createTaskEdit(task, board));
 };
 
 window.addEventListener("keydown", (e) => {
