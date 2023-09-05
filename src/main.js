@@ -377,7 +377,8 @@ const handleTaskSave = (taskId, board) => {
 };
 
 window.addEventListener("keydown", (e) => {
-  if (document.querySelector(".popup") && e.code === "KeyX")
+  console.log(e.code);
+  if (document.querySelector(".popup") && e.code === "Backquote")
     document.querySelector(".popup").remove();
 });
 
