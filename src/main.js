@@ -6,15 +6,12 @@ import { doc } from "prettier";
 const root = document.querySelector("#root");
 
 const createBoardList = (boards) => {
-  const boardList = document.createElement("ul");
-  boardList.classList.add("board-list");
+  const boardList = createElement("ul", ["board-list"]);
 
   boards.forEach((board) => {
-    const listElement = document.createElement("li");
-    listElement.classList.add("board-list-element");
+    const listElement = createElement("li", ["board-list-element"]);
 
-    const elementName = document.createElement("span");
-    elementName.classList.add("element-name", "heading-m");
+    const elementName = createElement("span", ["element-name", "heading-m"]);
     elementName.innerHTML = board.name;
     listElement.appendChild(elementName);
 
@@ -34,27 +31,21 @@ const createBoard = (board) => {
   if (document.querySelector(".board-element"))
     document.querySelector(".board-element").remove();
 
-  const boardElement = document.createElement("div");
-  boardElement.classList.add("board-element");
+  const boardElement = createElement("div", ["board-element"]);
 
   board.columns.forEach((column) => {
-    const columnElement = document.createElement("div");
-    columnElement.classList.add("column-element");
+    const columnElement = createElement("div", ["column-element"]);
 
-    const columnName = document.createElement("span");
-    columnName.classList.add("column-name", "heading-s");
+    const columnName = createElement("span", ["column-name", "heading-s"]);
     columnName.innerHTML = column.name;
     columnElement.appendChild(columnName);
 
     column.tasks.forEach((task) => {
       task.id = uniqid();
-      const taskElement = document.createElement("div");
-      taskElement.classList.add("task-element");
+      const taskElement = createElement("div", ["task-element"]);
 
-      const taskTitle = document.createElement("span");
-      taskTitle.classList.add("task-title", "heading-m");
+      const taskTitle = createElement("span", ["task-title", "heading-m"]);
       taskElement.innerHTML = task.title;
-      taskElement.innerHTML = `<span>${task.title}</span>`;
       taskElement.appendChild(taskTitle);
 
       columnElement.appendChild(taskElement);
@@ -74,33 +65,26 @@ const createTaskDetail = (task, board) => {
   const popup = document.querySelector(".popup");
 
   if (popup) popup.remove();
-  const taskDetailElement = document.createElement("div");
-  taskDetailElement.classList.add("task-detail", "popup");
+  const taskDetailElement = createElement("div", ["task-detail", "popup"]);
 
-  const taskTitleContainer = document.createElement("div");
-  taskTitleContainer.classList.add("task-title-container");
+  const taskTitleContainer = createElement("div", ["task-title-container"]);
   taskDetailElement.appendChild(taskTitleContainer);
 
-  const taskTitle = document.createElement("span");
-  taskTitle.classList.add("heading-l");
+  const taskTitle = createElement("span", ["heading-l"]);
   taskTitle.innerHTML = task.title;
   taskTitleContainer.appendChild(taskTitle);
 
-  const taskOptionsContainer = document.createElement("div");
-  taskOptionsContainer.classList.add("task-options-container");
+  const taskOptionsContainer = createElement("div", ["task-options-container"]);
   taskTitleContainer.appendChild(taskOptionsContainer);
 
-  const taskOptions = document.createElement("button");
-  taskOptions.classList.add("task-options");
+  const taskOptions = createElement("button", ["task-options"]);
   taskOptionsContainer.appendChild(taskOptions);
 
-  const taskOptionsList = document.createElement("ul");
-  taskOptionsList.classList.add("task-options-list");
+  const taskOptionsList = createElement("ul", ["task-options-list"]);
   taskOptionsList.dataset.visible = false;
   taskOptionsContainer.appendChild(taskOptionsList);
 
-  const editTaskItem = document.createElement("li");
-  editTaskItem.classList.add("edit-task-item");
+  const editTaskItem = createElement("li", ["edit-task-item"]);
   editTaskItem.innerHTML = "Edit Task";
   taskOptionsList.appendChild(editTaskItem);
 
@@ -108,32 +92,29 @@ const createTaskDetail = (task, board) => {
     root.appendChild(createTaskEdit(task, board))
   );
 
-  const deleteTaskItem = document.createElement("li");
-  deleteTaskItem.classList.add("delete-task-item");
+  const deleteTaskItem = createElement("li", ["delete-task-item"]);
   deleteTaskItem.innerHTML = "Delete Task";
   taskOptionsList.appendChild(deleteTaskItem);
 
-  const taskDescription = document.createElement("span");
-  taskDescription.classList.add("body-l");
+  const taskDescription = createElement("span", ["body-l"]);
   taskDescription.innerHTML = task.description;
   taskDetailElement.appendChild(taskDescription);
 
-  const subtaskContainer = document.createElement("div");
-  subtaskContainer.classList.add("subtask-container");
+  const subtaskContainer = createElement("div", ["subtask-container"]);
   taskDetailElement.appendChild(subtaskContainer);
 
-  const subtasksTitle = document.createElement("span");
-  subtasksTitle.classList.add("subtask-title", "body-m");
+  const subtasksTitle = createElement("span", ["subtask-title", "body-m"]);
   subtasksTitle.innerHTML = "Subtasks";
   subtaskContainer.appendChild(subtasksTitle);
 
   task.subtasks.forEach((subtask) => {
-    const subtaskContainerItem = document.createElement("div");
-    subtaskContainerItem.classList.add("subtask-container-item");
+    const subtaskContainerItem = createElement("div", [
+      "subtask-container-item",
+    ]);
     subtaskContainerItem.dataset.isCompleted = subtask.isCompleted;
     subtaskContainer.appendChild(subtaskContainerItem);
 
-    const subtaskCheckbox = document.createElement("input");
+    const subtaskCheckbox = createElement("input", ["subtask-checkbox"]);
     subtaskCheckbox.type = "checkbox";
     if (subtask.isCompleted) subtaskCheckbox.checked = true;
     subtaskContainerItem.appendChild(subtaskCheckbox);
@@ -199,61 +180,51 @@ const createTaskEdit = (task, board) => {
   const popup = document.querySelector(".popup");
 
   if (popup) popup.remove();
-  const taskEditElement = document.createElement("div");
-  taskEditElement.classList.add("task-edit", "popup");
+  const taskEditElement = createElement("div", ["task-edit", "popup"]);
 
-  const popupTitle = document.createElement("span");
-  popupTitle.classList.add("heading-l");
+  const popupTitle = createElement("span", ["heading-l"]);
   popupTitle.innerHTML = "Edit Task";
   taskEditElement.appendChild(popupTitle);
 
-  const titleContainer = document.createElement("div");
-  titleContainer.classList.add("title-container");
+  const titleContainer = createElement("div", ["title-container"]);
   taskEditElement.appendChild(titleContainer);
 
-  const titleContainerHeading = document.createElement("span");
-  titleContainerHeading.classList.add("body-m");
+  const titleContainerHeading = createElement("span", ["body-m"]);
   titleContainerHeading.innerHTML = "Title";
   titleContainer.appendChild(titleContainerHeading);
 
-  const titleContainerInput = document.createElement("input");
-  titleContainerInput.classList.add("title-container-input");
+  const titleContainerInput = createElement("input", ["title-container-input"]);
   titleContainer.type = "text";
   titleContainerInput.value = task.title;
   titleContainer.appendChild(titleContainerInput);
 
-  const descriptionContainer = document.createElement("div");
-  descriptionContainer.classList.add("description-container");
+  const descriptionContainer = createElement("div", ["description-container"]);
   taskEditElement.appendChild(descriptionContainer);
 
-  const descriptionContainerHeading = document.createElement("span");
-  descriptionContainerHeading.classList.add("body-m");
+  const descriptionContainerHeading = createElement("span", ["body-m"]);
   descriptionContainerHeading.innerHTML = "Description";
   descriptionContainer.appendChild(descriptionContainerHeading);
 
-  const descriptionContainerInput = document.createElement("textarea");
-  descriptionContainerInput.classList.add("description-container-input");
+  const descriptionContainerInput = createElement("textarea", [
+    "description-container-input",
+  ]);
   descriptionContainerInput.placeholder = `e.g. It’s always good to take a break. This 15 minute break will 
   recharge the batteries a little.`;
   descriptionContainer.appendChild(descriptionContainerInput);
 
-  const subtasksContainer = document.createElement("span");
-  subtasksContainer.classList.add("subtask-container");
+  const subtasksContainer = createElement("span", ["subtask-container"]);
   taskEditElement.appendChild(subtasksContainer);
 
   task.subtasks.forEach((subtask) => {
-    const subtaskContainer = document.createElement("div");
-    subtaskContainer.classList.add("subtask-container");
+    const subtaskContainer = createElement("div", ["subtask-container"]);
     subtasksContainer.appendChild(subtaskContainer);
 
-    const subtaskInput = document.createElement("input");
-    subtaskInput.classList.add("subtask-input");
+    const subtaskInput = createElement("input", ["subtask-input"]);
     subtaskInput.type = "text";
     subtaskInput.value = subtask.title;
     subtaskContainer.appendChild(subtaskInput);
 
-    const subtaskDelete = document.createElement("button");
-    subtaskDelete.classList.add("subtask-delete");
+    const subtaskDelete = createElement("button", ["subtask-delete"]);
     subtaskContainer.appendChild(subtaskDelete);
 
     subtaskDelete.addEventListener("click", (e) => {
@@ -265,37 +236,37 @@ const createTaskEdit = (task, board) => {
     });
   });
 
-  const subtasksAdd = document.createElement("button");
-  subtasksAdd.classList.add("subtasks-add", "button-secondary");
+  const subtasksAdd = createElement("button", [
+    "subtasks-add",
+    "button-secondary",
+  ]);
   subtasksAdd.innerHTML = "+ Add New Subtask";
   subtasksContainer.appendChild(subtasksAdd);
 
-  const statusContainer = document.createElement("div");
-  statusContainer.classList.add("status-container");
+  const statusContainer = createElement("div", ["status-container"]);
   taskEditElement.appendChild(statusContainer);
 
-  const statusTitle = document.createElement("span");
-  statusTitle.classList.add("body-m");
+  const statusTitle = createElement("span", ["body-m"]);
   statusTitle.innerHTML = "CurrentStatus";
   statusContainer.appendChild(statusTitle);
 
-  const statusDropdown = document.createElement("div");
-  statusDropdown.classList.add("dropdown");
+  const statusDropdown = createElement("div", ["dropdown"]);
   statusContainer.appendChild(statusDropdown);
 
-  const statusDropdownTitle = document.createElement("span");
-  statusDropdownTitle.classList.add("status-dropdown-title");
+  const statusDropdownTitle = createElement("span", ["status-dropdown-title"]);
   statusDropdownTitle.innerHTML = task.status;
   statusDropdown.appendChild(statusDropdownTitle);
 
-  const statusDropdownOptions = document.createElement("ul");
-  statusDropdownOptions.classList.add("status-dropdown-options");
+  const statusDropdownOptions = createElement("ul", [
+    "status-dropdown-options",
+  ]);
   statusDropdownOptions.dataset.visible = false;
   statusDropdown.appendChild(statusDropdownOptions);
 
   board.columns.forEach((column) => {
-    const statusDropdownOption = document.createElement("li");
-    statusDropdownOption.classList.add("status-dropdown-option");
+    const statusDropdownOption = createElement("li", [
+      "status-dropdown-option",
+    ]);
     statusDropdownOption.innerHTML = column.name;
     statusDropdownOptions.appendChild(statusDropdownOption);
 
@@ -308,8 +279,7 @@ const createTaskEdit = (task, board) => {
     });
   });
 
-  const taskSave = document.createElement("button");
-  taskSave.classList.add("task-save", "button-primary-l");
+  const taskSave = createElement("button", ["task-save", "button-primary-l"]);
   taskSave.innerHTML = "Save Changes";
   taskEditElement.appendChild(taskSave);
 
@@ -322,7 +292,7 @@ const createTaskEdit = (task, board) => {
   return taskEditElement;
 };
 
-const createElement = (tagName, classNames) => {
+const createElement = (tagName, classNames, innerHTML) => {
   const element = document.createElement(tagName);
   classNames.forEach((className) => element.classList.add(className));
   return element;
@@ -390,3 +360,5 @@ window.addEventListener("keydown", (e) => {
 
 root.appendChild(createBoardList(Data.boards));
 root.appendChild(createBoard(Data.boards[0]));
+
+// 392
