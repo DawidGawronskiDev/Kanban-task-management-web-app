@@ -322,6 +322,12 @@ const createTaskEdit = (task, board) => {
   return taskEditElement;
 };
 
+const createElement = (tagName, classNames) => {
+  const element = document.createElement(tagName);
+  classNames.forEach((className) => element.classList.add(className));
+  return element;
+};
+
 const handleTaskStatusChange = (taskId, newStatus, board) => {
   for (const column of board.columns) {
     const taskIndex = column.tasks.findIndex((task) => task.id === taskId);
