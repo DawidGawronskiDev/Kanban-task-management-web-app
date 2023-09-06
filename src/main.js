@@ -1,7 +1,12 @@
 import "./style.css";
 import Data from "./data.json";
 import uniqid from "uniqid";
-import { doc } from "prettier";
+
+import {
+  handleTaskStatusChange,
+  handleSubtaskDelete,
+  handleTaskSave,
+} from "./utils/utils";
 
 const root = document.querySelector("#root");
 
@@ -298,60 +303,6 @@ const createElement = (tagName, classNames, innerHTML) => {
   return element;
 };
 
-const handleTaskStatusChange = (taskId, newStatus, board) => {
-  for (const column of board.columns) {
-    const taskIndex = column.tasks.findIndex((task) => task.id === taskId);
-    if (taskIndex !== -1) {
-      const task = column.tasks.splice(taskIndex, 1)[0];
-      task.status = newStatus;
-      const targetColumn = board.columns.find((col) => col.name === newStatus);
-      targetColumn.tasks.push(task);
-      root.appendChild(createBoard(board));
-      break;
-    }
-  }
-};
-
-const handleSubtaskDelete = (subtaskIndex, task, board) => {
-  task.subtasks.splice(subtaskIndex, 1);
-  root.appendChild(createTaskEdit(task, board));
-};
-
-const handleTaskSave = (taskId, board) => {
-  const editedTask = document.querySelector(".task-edit");
-  const titleInput = editedTask.querySelector(".title-container-input");
-  const descriptionInput = editedTask.querySelector(
-    ".description-container-input"
-  );
-  const statusDropdownTitle = editedTask.querySelector(
-    ".status-dropdown-title"
-  );
-
-  const editedTaskData = {
-    title: titleInput.value,
-    description: descriptionInput.value,
-    status: statusDropdownTitle.innerHTML,
-    subtasks: [],
-  };
-
-  const subtaskInputs = editedTask.querySelectorAll(".subtask-input");
-  subtaskInputs.forEach((subtaskInput) => {
-    editedTaskData.subtasks.push({
-      title: subtaskInput.value,
-      isCompleted: false, // By default, subtasks are not completed
-    });
-  });
-
-  for (const column of board.columns) {
-    const taskIndex = column.tasks.findIndex((task) => task.id === taskId);
-    if (taskIndex !== -1) {
-      column.tasks[taskIndex] = editedTaskData;
-      root.appendChild(createBoard(board));
-      break;
-    }
-  }
-};
-
 window.addEventListener("keydown", (e) => {
   console.log(e.code);
   if (document.querySelector(".popup") && e.code === "Backquote")
@@ -360,5 +311,3 @@ window.addEventListener("keydown", (e) => {
 
 root.appendChild(createBoardList(Data.boards));
 root.appendChild(createBoard(Data.boards[0]));
-
-// 392
