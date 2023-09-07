@@ -1,3 +1,5 @@
+import { createBoard, createTaskEdit } from "../main";
+
 const handleTaskStatusChange = (taskId, newStatus, board) => {
   for (const column of board.columns) {
     const taskIndex = column.tasks.findIndex((task) => task.id === taskId);
@@ -8,6 +10,17 @@ const handleTaskStatusChange = (taskId, newStatus, board) => {
       targetColumn.tasks.push(task);
       root.appendChild(createBoard(board));
       break;
+    }
+  }
+};
+
+const handleTaskDelete = (taskId, board) => {
+  for (const column of board.columns) {
+    const taskIndex = column.tasks.findIndex((task) => task.id === taskId);
+    if (taskIndex !== -1) {
+      column.tasks.splice(taskIndex, 1);
+      document.querySelector(".popup").remove();
+      root.appendChild(createBoard(board));
     }
   }
 };
@@ -52,4 +65,9 @@ const handleTaskSave = (taskId, board) => {
   }
 };
 
-export { handleTaskStatusChange, handleSubtaskDelete, handleTaskSave };
+export {
+  handleTaskStatusChange,
+  handleTaskDelete,
+  handleSubtaskDelete,
+  handleTaskSave,
+};

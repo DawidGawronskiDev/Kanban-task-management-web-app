@@ -4,6 +4,7 @@ import uniqid from "uniqid";
 
 import {
   handleTaskStatusChange,
+  handleTaskDelete,
   handleSubtaskDelete,
   handleTaskSave,
 } from "./utils/utils";
@@ -100,6 +101,10 @@ const createTaskDetail = (task, board) => {
   const deleteTaskItem = createElement("li", ["delete-task-item"]);
   deleteTaskItem.innerHTML = "Delete Task";
   taskOptionsList.appendChild(deleteTaskItem);
+
+  deleteTaskItem.addEventListener("click", (e) => {
+    handleTaskDelete(task.id, board);
+  });
 
   const taskDescription = createElement("span", ["body-l"]);
   taskDescription.innerHTML = task.description;
@@ -248,6 +253,12 @@ const createTaskEdit = (task, board) => {
   subtasksAdd.innerHTML = "+ Add New Subtask";
   subtasksContainer.appendChild(subtasksAdd);
 
+  subtasksAdd.addEventListener("click", (e) => {
+    console.log(task.subtasks);
+    task.subtasks.push({ isCompleted: false, title: "" });
+    root.appendChild(createTaskEdit(task, board));
+  });
+
   const statusContainer = createElement("div", ["status-container"]);
   taskEditElement.appendChild(statusContainer);
 
@@ -297,7 +308,7 @@ const createTaskEdit = (task, board) => {
   return taskEditElement;
 };
 
-const createElement = (tagName, classNames, innerHTML) => {
+const createElement = (tagName, classNames) => {
   const element = document.createElement(tagName);
   classNames.forEach((className) => element.classList.add(className));
   return element;
@@ -305,9 +316,11 @@ const createElement = (tagName, classNames, innerHTML) => {
 
 window.addEventListener("keydown", (e) => {
   console.log(e.code);
-  if (document.querySelector(".popup") && e.code === "Backquote")
+  if (document.querySelector(".popup") && e.code === "Escape")
     document.querySelector(".popup").remove();
 });
 
 root.appendChild(createBoardList(Data.boards));
 root.appendChild(createBoard(Data.boards[0]));
+
+export { createBoard, createTaskEdit };
