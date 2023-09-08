@@ -30,8 +30,85 @@ const createBoardList = (boards) => {
     });
   });
 
+  const addBoard = createElement("li", ["add-board", "heading-m"]);
+  addBoard.innerHTML = "+ Create New Board";
+  boardList.appendChild(addBoard);
+
+  addBoard.addEventListener("click", (e) => {
+    root.appendChild(createNewBoardPopup(boards));
+  })
+
   return boardList;
 };
+
+const createNewBoardPopup = (boards) => {
+  console.log(boards)
+  const popup = document.querySelector(".popup");
+  if (popup) popup.remove();
+
+  const newBoard = {
+    name: "",
+    columns: [
+      {name: "Todo", tasks: []},
+      {name: "Doing", tasks: []},
+    ],
+  }
+
+  const newBoardPoup = createElement("div", ["new-board-popup", "popup"]);
+  const popupTitle = createElement("span", ["popup-title", "heading-l"]);
+  popupTitle.innerHTML = "Add New Board";
+  newBoardPoup.appendChild(popupTitle);
+
+  const nameInputContainer = createElement("div", ["name-input-contianer"]);
+  newBoardPoup.appendChild(nameInputContainer);
+
+  const nameInputTitle = createElement("span", ["body-m"]);
+  nameInputTitle.innerHTML = "Name";
+  nameInputContainer.appendChild(nameInputTitle);
+
+  const nameInput = createElement("input", ["name-input"]);
+  nameInput.type = "text";
+  nameInput.placeholder = "e.g. Web Design";
+  nameInputContainer.appendChild(nameInput);
+
+  nameInput.addEventListener("input", (e) => {newBoard.name = e.target.value});
+
+  const columnsInputContainer = createElement("div", ["columns-input-container"]);
+  newBoardPoup.appendChild(columnsInputContainer);
+
+  const columnsInputTitle = createElement("span", ["body-m"]);
+  columnsInputTitle.innerHTML = "Columns";
+  columnsInputContainer.appendChild(columnsInputTitle);
+
+  newBoard.columns.forEach(column => {
+    console.log(column.name)
+    const columnInputContainer = createElement("div", ["column-input-container"]);
+    columnsInputContainer.appendChild(columnInputContainer);
+
+    const columnNameInput = createElement("input", ["column-input-container"]);
+    columnNameInput.type = "text";
+    columnNameInput.value = column.name;
+    columnInputContainer.appendChild(columnNameInput);
+
+    const columnDelete = createElement("button", ["columnDelete"]);
+    columnDelete.innerHTML = "x";
+    columnInputContainer.appendChild(columnDelete);
+  })
+
+  const addColumn = createElement("button", ["add-column", "button-secondary"]);
+  addColumn.innerHTML = "+ Add New Column";
+  columnsInputContainer.appendChild(addColumn);
+
+  const createNewBoard = createElement("button", ["create-new-board", "button-primary"]);
+  createNewBoard.innerHTML = "Create New Board";
+  newBoardPoup.appendChild(createNewBoard);
+
+  createNewBoard.addEventListener("click", (e) => {
+    boa
+  })
+
+  return newBoardPoup;
+}
 
 const createBoard = (board) => {
   if (document.querySelector(".board-element"))
@@ -51,7 +128,7 @@ const createBoard = (board) => {
       const taskElement = createElement("div", ["task-element"]);
 
       const taskTitle = createElement("span", ["task-title", "heading-m"]);
-      taskElement.innerHTML = task.title;
+      taskTitle.innerHTML = task.title;
       taskElement.appendChild(taskTitle);
 
       columnElement.appendChild(taskElement);
@@ -315,7 +392,6 @@ const createElement = (tagName, classNames) => {
 };
 
 window.addEventListener("keydown", (e) => {
-  console.log(e.code);
   if (document.querySelector(".popup") && e.code === "Escape")
     document.querySelector(".popup").remove();
 });
