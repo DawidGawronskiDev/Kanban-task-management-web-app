@@ -1,7 +1,6 @@
 import "./style.css";
 import Data from "./data.json";
 import uniqid from "uniqid";
-
 import {
   handleTaskStatusChange,
   handleTaskDelete,
@@ -12,6 +11,9 @@ import {
 const root = document.querySelector("#root");
 
 const createBoardList = (boards) => {
+  if (document.querySelector(".board-list"))
+    document.querySelector(".board-list").remove();
+
   const boardList = createElement("ul", ["board-list"]);
 
   boards.forEach((board) => {
@@ -36,23 +38,20 @@ const createBoardList = (boards) => {
 
   addBoard.addEventListener("click", (e) => {
     root.appendChild(createNewBoardPopup(boards));
-  })
+  });
 
   return boardList;
 };
 
 const createNewBoardPopup = (boards) => {
-  console.log(boards)
+  console.log(boards);
   const popup = document.querySelector(".popup");
   if (popup) popup.remove();
 
   const newBoard = {
     name: "",
-    columns: [
-      {name: "Todo", tasks: []},
-      {name: "Doing", tasks: []},
-    ],
-  }
+    columns: [{ name: "", tasks: [] }],
+  };
 
   const newBoardPoup = createElement("div", ["new-board-popup", "popup"]);
   const popupTitle = createElement("span", ["popup-title", "heading-l"]);
@@ -71,18 +70,27 @@ const createNewBoardPopup = (boards) => {
   nameInput.placeholder = "e.g. Web Design";
   nameInputContainer.appendChild(nameInput);
 
-  nameInput.addEventListener("input", (e) => {newBoard.name = e.target.value});
+  nameInput.addEventListener("click", (e) => {
+    newBoard.name = e.target.value;
+  });
 
-  const columnsInputContainer = createElement("div", ["columns-input-container"]);
+  nameInput.addEventListener("input", (e) => {
+    newBoard.name = e.target.value;
+  });
+
+  const columnsInputContainer = createElement("div", [
+    "columns-input-container",
+  ]);
   newBoardPoup.appendChild(columnsInputContainer);
 
   const columnsInputTitle = createElement("span", ["body-m"]);
   columnsInputTitle.innerHTML = "Columns";
   columnsInputContainer.appendChild(columnsInputTitle);
 
-  newBoard.columns.forEach(column => {
-    console.log(column.name)
-    const columnInputContainer = createElement("div", ["column-input-container"]);
+  const createColumnInputContainer = (column) => {
+    const columnInputContainer = createElement("div", [
+      "column-input-container",
+    ]);
     columnsInputContainer.appendChild(columnInputContainer);
 
     const columnNameInput = createElement("input", ["column-input-container"]);
@@ -90,25 +98,55 @@ const createNewBoardPopup = (boards) => {
     columnNameInput.value = column.name;
     columnInputContainer.appendChild(columnNameInput);
 
+    columnNameInput.addEventListener("input", (e) => {
+      column.name = e.target.value;
+    });
+
     const columnDelete = createElement("button", ["columnDelete"]);
     columnDelete.innerHTML = "x";
     columnInputContainer.appendChild(columnDelete);
-  })
+
+    columnDelete.addEventListener("click", (e) => {
+      const columnIndex = newBoard.columns.indexOf(column);
+      newBoard.columns.splice(columnIndex, 1);
+      createColumnInputs();
+    });
+
+    return columnInputContainer;
+  };
+
+  const createColumnInputs = () => {
+    columnsInputContainer.innerHTML = "";
+    newBoard.columns.forEach((column) => {
+      columnsInputContainer.appendChild(createColumnInputContainer(column));
+    });
+  };
+  createColumnInputs();
 
   const addColumn = createElement("button", ["add-column", "button-secondary"]);
   addColumn.innerHTML = "+ Add New Column";
-  columnsInputContainer.appendChild(addColumn);
+  newBoardPoup.appendChild(addColumn);
 
-  const createNewBoard = createElement("button", ["create-new-board", "button-primary"]);
+  addColumn.addEventListener("click", (e) => {
+    newBoard.columns.push({ name: "", tasks: [] });
+    createColumnInputs();
+  });
+
+  const createNewBoard = createElement("button", [
+    "create-new-board",
+    "button-primary",
+  ]);
   createNewBoard.innerHTML = "Create New Board";
   newBoardPoup.appendChild(createNewBoard);
 
   createNewBoard.addEventListener("click", (e) => {
-    boa
-  })
+    boards.push(newBoard);
+    root.appendChild(createBoardList(boards));
+    root.appendChild(createBoard(boards[0]));
+  });
 
   return newBoardPoup;
-}
+};
 
 const createBoard = (board) => {
   if (document.querySelector(".board-element"))
