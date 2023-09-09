@@ -23,6 +23,14 @@ const createHeader = (board) => {
   return headerElement;
 };
 
+const createAside = (data) => {
+  const asideElement = createElement("aside", ["aside"]);
+
+  asideElement.appendChild(createBoardList(data.boards));
+
+  return asideElement;
+};
+
 const createBoardList = (boards) => {
   if (document.querySelector(".board-list"))
     document.querySelector(".board-list").remove();
@@ -445,7 +453,7 @@ const createElement = (tagName, classNames) => {
 const renderApp = (data) => {
   root.innerHTML = "";
   root.appendChild(createHeader(data.boards[0]));
-  root.appendChild(createBoardList(data.boards));
+  root.appendChild(createAside(data));
   root.appendChild(createBoard(data.boards[0]));
 };
 
