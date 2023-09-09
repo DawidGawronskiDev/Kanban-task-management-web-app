@@ -9,6 +9,7 @@ import {
 } from "./utils/utils";
 
 const root = document.querySelector("#root");
+let currentBoard = Data.boards[0];
 
 const createHeader = (board) => {
   const headerElement = createElement("header", ["header"]);
@@ -23,45 +24,59 @@ const createHeader = (board) => {
   return headerElement;
 };
 
-const createAside = (data) => {
+const createAside = () => {
   const asideElement = createElement("aside", ["aside"]);
 
-  asideElement.appendChild(createBoardList(data.boards));
+  const boardList = createElement("ul", ["board-list"]);
+  asideElement.appendChild(boardList);
 
   return asideElement;
 };
 
-const createBoardList = (boards) => {
-  if (document.querySelector(".board-list"))
-    document.querySelector(".board-list").remove();
+const createBoardListElement = (board) => {
+  const boardListElement = createElement("li", ["board-list-element"]);
+  boardListElement.innerHTML = board.name;
+  boardListElement.dataset.active = false;
 
-  const boardList = createElement("ul", ["board-list"]);
+  if (board.name === currentBoard.name) boardListElement.dataset.active = true;
 
-  boards.forEach((board) => {
-    const listElement = createElement("li", ["board-list-element"]);
+  return boardListElement;
+};
 
-    const elementName = createElement("span", ["element-name", "heading-m"]);
-    elementName.innerHTML = board.name;
-    listElement.appendChild(elementName);
+const handleChangeBoard = () => {
+  const boardListElements = Array.from(
+    document.querySelectorAll(".board-list-element")
+  );
 
-    boardList.appendChild(listElement);
-
-    listElement.addEventListener("click", () => {
-      const boardElement = document.querySelector(".board-element");
-      boardElement.remove();
-      root.appendChild(createBoard(board));
+  boardListElements.forEach((element) => {
+    element.addEventListener("click", (e) => {
+      const indexOfElement = boardListElements.indexOf(element);
+      changeCurrentBoard(indexOfElement);
+      renderApp(Data, currentBoard);
     });
   });
+};
 
-  const addBoard = createElement("li", ["add-board", "heading-m"]);
-  addBoard.innerHTML = "+ Create New Board";
-  boardList.appendChild(addBoard);
+const changeCurrentBoard = (index) => {
+  currentBoard = Data.boards[index];
+};
 
-  addBoard.addEventListener("click", (e) => {
+const renderBoardListElements = (boards) => {
+  const boardList = document.querySelector(".board-list");
+  boardList.innerHTML = "";
+  boards.forEach((board) =>
+    boardList.appendChild(createBoardListElement(board))
+  );
+
+  const newBoard = createElement("li", ["new-board-buton"]);
+  newBoard.innerHTML = "+ Add New Board";
+  boardList.appendChild(newBoard);
+
+  newBoard.addEventListener("click", () => {
     root.appendChild(createNewBoardPopup(boards));
   });
 
-  return boardList;
+  handleChangeBoard();
 };
 
 const createNewBoardPopup = (boards) => {
@@ -162,8 +177,7 @@ const createNewBoardPopup = (boards) => {
 
   createNewBoard.addEventListener("click", (e) => {
     boards.push(newBoard);
-    root.appendChild(createBoardList(boards));
-    root.appendChild(createBoard(boards[0]));
+    renderApp(Data, currentBoard);
   });
 
   return newBoardPoup;
@@ -450,14 +464,16 @@ const createElement = (tagName, classNames) => {
   return element;
 };
 
-const renderApp = (data) => {
+const renderApp = (data, currentBoard) => {
   root.innerHTML = "";
-  root.appendChild(createHeader(data.boards[0]));
-  root.appendChild(createAside(data));
-  root.appendChild(createBoard(data.boards[0]));
+  root.appendChild(createHeader(currentBoard));
+  root.appendChild(createAside());
+  root.appendChild(createBoard(currentBoard));
+
+  renderBoardListElements(data.boards);
 };
 
-renderApp(Data);
+renderApp(Data, currentBoard);
 
 window.addEventListener("keydown", (e) => {
   if (document.querySelector(".popup") && e.code === "Escape")
