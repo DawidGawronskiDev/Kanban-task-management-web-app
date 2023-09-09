@@ -94,7 +94,7 @@ const createNewBoardPopup = (boards) => {
   popupTitle.innerHTML = "Add New Board";
   newBoardPoup.appendChild(popupTitle);
 
-  const nameInputContainer = createElement("div", ["name-input-contianer"]);
+  const nameInputContainer = createElement("div", ["inputs-container"]);
   newBoardPoup.appendChild(nameInputContainer);
 
   const nameInputTitle = createElement("span", ["body-m"]);
@@ -114,22 +114,18 @@ const createNewBoardPopup = (boards) => {
     newBoard.name = e.target.value;
   });
 
-  const columnsInputContainer = createElement("div", [
-    "columns-input-container",
-  ]);
+  const columnsInputContainer = createElement("div", ["inputs-container"]);
   newBoardPoup.appendChild(columnsInputContainer);
 
-  const columnsInputTitle = createElement("span", ["body-m"]);
-  columnsInputTitle.innerHTML = "Columns";
-  columnsInputContainer.appendChild(columnsInputTitle);
+  const columnsInputContainerTitle = createElement("span", ["body-m"]);
+  columnsInputContainerTitle.innerHTML = "Columns";
+  columnsInputContainer.appendChild(columnsInputContainerTitle);
 
   const createColumnInputContainer = (column) => {
-    const columnInputContainer = createElement("div", [
-      "column-input-container",
-    ]);
+    const columnInputContainer = createElement("div", ["input-container"]);
     columnsInputContainer.appendChild(columnInputContainer);
 
-    const columnNameInput = createElement("input", ["column-input-container"]);
+    const columnNameInput = createElement("input", []);
     columnNameInput.type = "text";
     columnNameInput.value = column.name;
     columnInputContainer.appendChild(columnNameInput);
@@ -139,7 +135,6 @@ const createNewBoardPopup = (boards) => {
     });
 
     const columnDelete = createElement("button", ["columnDelete"]);
-    columnDelete.innerHTML = "x";
     columnInputContainer.appendChild(columnDelete);
 
     columnDelete.addEventListener("click", (e) => {
@@ -153,6 +148,11 @@ const createNewBoardPopup = (boards) => {
 
   const createColumnInputs = () => {
     columnsInputContainer.innerHTML = "";
+
+    const columnsInputTitle = createElement("span", ["body-m"]);
+    columnsInputTitle.innerHTML = "Columns";
+    columnsInputContainer.appendChild(columnsInputTitle);
+
     newBoard.columns.forEach((column) => {
       columnsInputContainer.appendChild(createColumnInputContainer(column));
     });
@@ -170,7 +170,7 @@ const createNewBoardPopup = (boards) => {
 
   const createNewBoard = createElement("button", [
     "create-new-board",
-    "button-primary",
+    "button-primary-s",
   ]);
   createNewBoard.innerHTML = "Create New Board";
   newBoardPoup.appendChild(createNewBoard);
@@ -188,6 +188,9 @@ const createBoard = (board) => {
     document.querySelector(".board-element").remove();
 
   const boardElement = createElement("div", ["board-element"]);
+
+  const boardsContainer = createElement("div", ["boards-container"]);
+  boardElement.appendChild(boardsContainer);
 
   board.columns.forEach((column) => {
     const columnElement = createElement("div", ["column-element"]);
@@ -211,7 +214,7 @@ const createBoard = (board) => {
       );
     });
 
-    boardElement.appendChild(columnElement);
+    boardsContainer.appendChild(columnElement);
   });
 
   return boardElement;
@@ -223,7 +226,7 @@ const createTaskDetail = (task, board) => {
   if (popup) popup.remove();
   const taskDetailElement = createElement("div", ["task-detail", "popup"]);
 
-  const taskTitleContainer = createElement("div", ["task-title-container"]);
+  const taskTitleContainer = createElement("div", ["input-container"]);
   taskDetailElement.appendChild(taskTitleContainer);
 
   const taskTitle = createElement("span", ["heading-l"]);
@@ -236,11 +239,19 @@ const createTaskDetail = (task, board) => {
   const taskOptions = createElement("button", ["task-options"]);
   taskOptionsContainer.appendChild(taskOptions);
 
+  taskOptions.addEventListener("click", (e) => {
+    const taskOptionsList = document.querySelector(".task-options-list");
+
+    taskOptionsList.dataset.visible === "false"
+      ? (taskOptionsList.dataset.visible = "true")
+      : (taskOptionsList.dataset.visible = "false");
+  });
+
   const taskOptionsList = createElement("ul", ["task-options-list"]);
   taskOptionsList.dataset.visible = false;
   taskOptionsContainer.appendChild(taskOptionsList);
 
-  const editTaskItem = createElement("li", ["edit-task-item"]);
+  const editTaskItem = createElement("li", ["edit-task-item", "body-l"]);
   editTaskItem.innerHTML = "Edit Task";
   taskOptionsList.appendChild(editTaskItem);
 
@@ -248,7 +259,7 @@ const createTaskDetail = (task, board) => {
     root.appendChild(createTaskEdit(task, board))
   );
 
-  const deleteTaskItem = createElement("li", ["delete-task-item"]);
+  const deleteTaskItem = createElement("li", ["delete-task-item", "body-l"]);
   deleteTaskItem.innerHTML = "Delete Task";
   taskOptionsList.appendChild(deleteTaskItem);
 
@@ -260,7 +271,7 @@ const createTaskDetail = (task, board) => {
   taskDescription.innerHTML = task.description;
   taskDetailElement.appendChild(taskDescription);
 
-  const subtaskContainer = createElement("div", ["subtask-container"]);
+  const subtaskContainer = createElement("div", ["inputs-container"]);
   taskDetailElement.appendChild(subtaskContainer);
 
   const subtasksTitle = createElement("span", ["subtask-title", "body-m"]);
@@ -268,9 +279,7 @@ const createTaskDetail = (task, board) => {
   subtaskContainer.appendChild(subtasksTitle);
 
   task.subtasks.forEach((subtask) => {
-    const subtaskContainerItem = createElement("div", [
-      "subtask-container-item",
-    ]);
+    const subtaskContainerItem = createElement("div", ["input-container"]);
     subtaskContainerItem.dataset.isCompleted = subtask.isCompleted;
     subtaskContainer.appendChild(subtaskContainerItem);
 
@@ -296,7 +305,7 @@ const createTaskDetail = (task, board) => {
   });
 
   const statusContainer = document.createElement("div");
-  statusContainer.classList.add("status-container");
+  statusContainer.classList.add("inputs-container");
   taskDetailElement.appendChild(statusContainer);
 
   const statusTitle = document.createElement("span");
@@ -308,8 +317,18 @@ const createTaskDetail = (task, board) => {
   statusDropdown.classList.add("dropdown");
   statusContainer.appendChild(statusDropdown);
 
-  const statusDropdownTitle = document.createElement("span");
-  statusDropdownTitle.classList.add("status-dropdown-title");
+  statusDropdown.addEventListener("click", (e) => {
+    const statusDropdownOptions = document.querySelector(
+      ".status-dropdown-options"
+    );
+
+    statusDropdownOptions.dataset.visible === "false"
+      ? (statusDropdownOptions.dataset.visible = "true")
+      : (statusDropdownOptions.dataset.visible = "false");
+  });
+
+  const statusDropdownTitle = document.createElement("div");
+  statusDropdownTitle.classList.add("status-dropdown-title", "body-l");
   statusDropdownTitle.innerHTML = task.status;
   statusDropdown.appendChild(statusDropdownTitle);
 
@@ -320,7 +339,7 @@ const createTaskDetail = (task, board) => {
 
   board.columns.forEach((column) => {
     const statusDropdownOption = document.createElement("li");
-    statusDropdownOption.classList.add("status-dropdown-option");
+    statusDropdownOption.classList.add("status-dropdown-option", "body-l");
     statusDropdownOption.innerHTML = column.name;
     statusDropdownOptions.appendChild(statusDropdownOption);
 
@@ -346,7 +365,7 @@ const createTaskEdit = (task, board) => {
   popupTitle.innerHTML = "Edit Task";
   taskEditElement.appendChild(popupTitle);
 
-  const titleContainer = createElement("div", ["title-container"]);
+  const titleContainer = createElement("div", ["inputs-container"]);
   taskEditElement.appendChild(titleContainer);
 
   const titleContainerHeading = createElement("span", ["body-m"]);
@@ -354,11 +373,11 @@ const createTaskEdit = (task, board) => {
   titleContainer.appendChild(titleContainerHeading);
 
   const titleContainerInput = createElement("input", ["title-container-input"]);
-  titleContainer.type = "text";
+  titleContainerInput.type = "text";
   titleContainerInput.value = task.title;
   titleContainer.appendChild(titleContainerInput);
 
-  const descriptionContainer = createElement("div", ["description-container"]);
+  const descriptionContainer = createElement("div", ["inputs-container"]);
   taskEditElement.appendChild(descriptionContainer);
 
   const descriptionContainerHeading = createElement("span", ["body-m"]);
@@ -367,16 +386,16 @@ const createTaskEdit = (task, board) => {
 
   const descriptionContainerInput = createElement("textarea", [
     "description-container-input",
+    "body-l",
   ]);
-  descriptionContainerInput.placeholder = `e.g. It’s always good to take a break. This 15 minute break will 
-  recharge the batteries a little.`;
+  descriptionContainerInput.placeholder = `e.g. It’s always good to take a break.`;
   descriptionContainer.appendChild(descriptionContainerInput);
 
-  const subtasksContainer = createElement("span", ["subtask-container"]);
+  const subtasksContainer = createElement("span", ["inputs-container"]);
   taskEditElement.appendChild(subtasksContainer);
 
   task.subtasks.forEach((subtask) => {
-    const subtaskContainer = createElement("div", ["subtask-container"]);
+    const subtaskContainer = createElement("div", ["input-container"]);
     subtasksContainer.appendChild(subtaskContainer);
 
     const subtaskInput = createElement("input", ["subtask-input"]);
@@ -419,7 +438,17 @@ const createTaskEdit = (task, board) => {
   const statusDropdown = createElement("div", ["dropdown"]);
   statusContainer.appendChild(statusDropdown);
 
-  const statusDropdownTitle = createElement("span", ["status-dropdown-title"]);
+  statusDropdown.addEventListener("click", (e) => {
+    const statusDropdownOptions = document.querySelector(
+      ".status-dropdown-options"
+    );
+
+    statusDropdownOptions.dataset.visible === "false"
+      ? (statusDropdownOptions.dataset.visible = "true")
+      : (statusDropdownOptions.dataset.visible = "false");
+  });
+
+  const statusDropdownTitle = createElement("div", ["status-dropdown-title"]);
   statusDropdownTitle.innerHTML = task.status;
   statusDropdown.appendChild(statusDropdownTitle);
 
@@ -445,7 +474,7 @@ const createTaskEdit = (task, board) => {
     });
   });
 
-  const taskSave = createElement("button", ["task-save", "button-primary-l"]);
+  const taskSave = createElement("button", ["task-save", "button-primary-s"]);
   taskSave.innerHTML = "Save Changes";
   taskEditElement.appendChild(taskSave);
 
@@ -481,3 +510,11 @@ window.addEventListener("keydown", (e) => {
 });
 
 export { createBoard, createTaskEdit };
+
+// Create createDropdown Function !!!
+// Update Header !!!
+// Add Media Queries !!!
+// Add dark mode !!!
+// Update Checkboxes !!!
+
+// description in task is breaking !!!!
