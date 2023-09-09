@@ -10,6 +10,19 @@ import {
 
 const root = document.querySelector("#root");
 
+const createHeader = (board) => {
+  const headerElement = createElement("header", ["header"]);
+
+  const logoContainer = createElement("div", ["header-logo-container"]);
+  headerElement.appendChild(logoContainer);
+
+  const boardName = createElement("span", ["heading-xl"]);
+  boardName.innerHTML = board.name;
+  headerElement.appendChild(boardName);
+
+  return headerElement;
+};
+
 const createBoardList = (boards) => {
   if (document.querySelector(".board-list"))
     document.querySelector(".board-list").remove();
@@ -429,12 +442,18 @@ const createElement = (tagName, classNames) => {
   return element;
 };
 
+const renderApp = (data) => {
+  root.innerHTML = "";
+  root.appendChild(createHeader(data.boards[0]));
+  root.appendChild(createBoardList(data.boards));
+  root.appendChild(createBoard(data.boards[0]));
+};
+
+renderApp(Data);
+
 window.addEventListener("keydown", (e) => {
   if (document.querySelector(".popup") && e.code === "Escape")
     document.querySelector(".popup").remove();
 });
-
-root.appendChild(createBoardList(Data.boards));
-root.appendChild(createBoard(Data.boards[0]));
 
 export { createBoard, createTaskEdit };
