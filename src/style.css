@@ -79,6 +79,7 @@ body {
 
 /* Interactive Elements - Light Version */
 
+.button-primary-l,
 .button-primary-s,
 .button-secondary {
   cursor: pointer;
@@ -91,6 +92,11 @@ body {
 
   border: none;
   border-radius: 20px;
+}
+
+.button-primary-l {
+  color: var(--white);
+  background-color: var(--main-purple);
 }
 
 .button-primary-s {
@@ -124,6 +130,10 @@ main {
   align-items: center;
 
   border-bottom: 1px solid var(--lines-light);
+}
+
+.header > [class^="button"] {
+  max-width: 164px;
 }
 
 .header-logo-container {
@@ -323,7 +333,7 @@ textarea::-webkit-scrollbar-thumb {
   background-color: var(--medium-grey);
 }
 
-.input-container button {
+.delete-button {
   cursor: pointer;
 
   aspect-ratio: 1 / 1;

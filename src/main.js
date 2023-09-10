@@ -8,6 +8,8 @@ import {
   handleTaskSave,
 } from "./utils/utils";
 
+console.log(Data);
+
 const root = document.querySelector("#root");
 let currentBoard = Data.boards[0];
 
@@ -21,7 +23,193 @@ const createHeader = (board) => {
   boardName.innerHTML = board.name;
   headerElement.appendChild(boardName);
 
+  const addNewTask = createElement("button", ["button-primary-l"]);
+  addNewTask.innerHTML = "+ Add New Task";
+  headerElement.appendChild(addNewTask);
+
+  addNewTask.addEventListener("click", () =>
+    root.appendChild(createTaskAdd(board))
+  );
+
   return headerElement;
+};
+
+const createTaskAdd = (board) => {
+  const popup = document.querySelector(".popup");
+
+  if (popup) popup.remove();
+  const taskAddElement = createElement("div", ["task-edit", "popup"]);
+
+  const newTask = {
+    description: "",
+    status: currentBoard.columns[0].name,
+    subtasks: [
+      {
+        isCompleted: false,
+        title: "",
+      },
+      {
+        isCompleted: false,
+        title: "",
+      },
+    ],
+    title: "",
+  };
+
+  const popupTitle = createElement("span", ["heading-l"]);
+  popupTitle.innerHTML = "Add New Task";
+  taskAddElement.appendChild(popupTitle);
+
+  const titleContainer = createElement("div", ["inputs-container"]);
+  taskAddElement.appendChild(titleContainer);
+
+  const titleInputTitle = createElement("span", ["body-m"]);
+  titleInputTitle.innerHTML = "Title";
+  titleContainer.appendChild(titleInputTitle);
+
+  const titleInput = createElement("input", []);
+  titleInput.type = "text";
+  titleInput.placeholder = "e.g. Take coffee break";
+  titleInput.value = "";
+  titleContainer.appendChild(titleInput);
+
+  titleInput.addEventListener("input", (e) => {
+    newTask.title = e.target.value;
+    console.log(newTask);
+  });
+
+  const descriptionContainer = createElement("div", ["inputs-container"]);
+  taskAddElement.appendChild(descriptionContainer);
+
+  const descriptionInputTitle = createElement("span", ["body-m"]);
+  descriptionInputTitle.innerHTML = "Description";
+  descriptionContainer.appendChild(descriptionInputTitle);
+
+  const descriptionInput = createElement("textarea", []);
+  descriptionInput.placeholder = "e.g. It’s always good to take a break.";
+  descriptionInput.value = "";
+  descriptionContainer.appendChild(descriptionInput);
+
+  descriptionInput.addEventListener("input", (e) => {
+    newTask.description = e.target.value;
+    console.log(newTask);
+  });
+
+  const subtasksContainer = createElement("div", ["inputs-container"]);
+  taskAddElement.appendChild(subtasksContainer);
+
+  const subtasksTitle = createElement("span", ["body-m"]);
+  subtasksTitle.innerHTML = "Subtasks";
+  subtasksContainer.appendChild(subtasksTitle);
+
+  const renderSubtaks = () => {
+    (subtasksContainer.innerHTML = ""),
+      newTask.subtasks.forEach((subtask) => {
+        const subtaskInputContainer = createElement("div", ["input-container"]);
+        subtasksContainer.appendChild(subtaskInputContainer);
+
+        const subtaskInput = createElement("input", ["input-container"]);
+        subtaskInput.type = "text";
+        subtaskInput.placeholder = "e.g. Make coffee";
+        subtaskInputContainer.appendChild(subtaskInput);
+
+        subtaskInput.addEventListener("input", (e) => {
+          subtask.title = e.target.value;
+          console.log(newTask);
+        });
+
+        const subtaskDelete = createElement("button", ["delete-button"]);
+        subtaskInputContainer.appendChild(subtaskDelete);
+
+        subtaskDelete.addEventListener("click", (e) => {
+          const deleteButtons = Array.from(
+            document.querySelectorAll(".delete-button")
+          );
+          const buttonIndex = deleteButtons.indexOf(e.target);
+
+          console.log(deleteButtons, buttonIndex);
+
+          newTask.subtasks.splice(buttonIndex, 1);
+          renderSubtaks();
+        });
+      });
+
+    const addSubtaskButton = createElement("button", ["button-secondary"]);
+    addSubtaskButton.innerHTML = "+ Add Subtask";
+    subtasksContainer.appendChild(addSubtaskButton);
+
+    addSubtaskButton.addEventListener("click", () => {
+      newTask.subtasks.push({
+        isCompleted: false,
+        title: "",
+      });
+
+      renderSubtaks();
+    });
+  };
+  renderSubtaks();
+
+  const statusContainer = document.createElement("div");
+  statusContainer.classList.add("inputs-container");
+  taskAddElement.appendChild(statusContainer);
+
+  const statusTitle = document.createElement("span");
+  statusTitle.classList.add("body-m");
+  statusTitle.innerHTML = "Status";
+  statusContainer.appendChild(statusTitle);
+
+  const statusDropdown = document.createElement("div");
+  statusDropdown.classList.add("dropdown");
+  statusContainer.appendChild(statusDropdown);
+
+  statusDropdown.addEventListener("click", (e) => {
+    const statusDropdownOptions = document.querySelector(
+      ".status-dropdown-options"
+    );
+
+    statusDropdownOptions.dataset.visible === "false"
+      ? (statusDropdownOptions.dataset.visible = "true")
+      : (statusDropdownOptions.dataset.visible = "false");
+  });
+
+  const statusDropdownTitle = document.createElement("div");
+  statusDropdownTitle.classList.add("status-dropdown-title", "body-l");
+  statusDropdownTitle.innerHTML = currentBoard.columns[0].name;
+  statusDropdown.appendChild(statusDropdownTitle);
+
+  const statusDropdownOptions = document.createElement("ul");
+  statusDropdownOptions.classList.add("status-dropdown-options");
+  statusDropdownOptions.dataset.visible = false;
+  statusDropdown.appendChild(statusDropdownOptions);
+
+  currentBoard.columns.forEach((column) => {
+    const statusDropdownOption = document.createElement("li");
+    statusDropdownOption.classList.add("status-dropdown-option", "body-l");
+    statusDropdownOption.innerHTML = column.name;
+    statusDropdownOptions.appendChild(statusDropdownOption);
+
+    statusDropdownOption.addEventListener("click", (e) => {
+      const newStatus = e.target.innerHTML;
+      newTask.status = newStatus;
+      statusDropdownTitle.innerHTML = newStatus;
+    });
+  });
+
+  const createTaskButton = createElement("button", ["button-primary-l"]);
+  createTaskButton.innerHTML = "Create Task";
+  taskAddElement.appendChild(createTaskButton);
+
+  createTaskButton.addEventListener("click", (e) => {
+    const taskColumn = board.columns.find(
+      (column) => column.name === newTask.status
+    );
+
+    taskColumn.tasks.push(newTask);
+
+    renderApp(Data, currentBoard);
+  });
+
+  return taskAddElement;
 };
 
 const createAside = () => {
@@ -134,7 +322,7 @@ const createNewBoardPopup = (boards) => {
       column.name = e.target.value;
     });
 
-    const columnDelete = createElement("button", ["columnDelete"]);
+    const columnDelete = createElement("button", ["delete-button"]);
     columnInputContainer.appendChild(columnDelete);
 
     columnDelete.addEventListener("click", (e) => {
@@ -403,7 +591,7 @@ const createTaskEdit = (task, board) => {
     subtaskInput.value = subtask.title;
     subtaskContainer.appendChild(subtaskInput);
 
-    const subtaskDelete = createElement("button", ["subtask-delete"]);
+    const subtaskDelete = createElement("button", ["delete-button"]);
     subtaskContainer.appendChild(subtaskDelete);
 
     subtaskDelete.addEventListener("click", (e) => {

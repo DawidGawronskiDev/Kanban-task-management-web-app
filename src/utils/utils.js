@@ -63,6 +63,8 @@ const handleTaskSave = (taskId, board) => {
       break;
     }
   }
+
+  document.querySelector(".popup").remove();
 };
 
 export {
