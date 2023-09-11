@@ -13,19 +13,24 @@ import createSubtasksDetail from "./components/Subtasks/SubtasksDetail";
 const root = document.querySelector("#root");
 let currentBoard = Data.boards[0];
 
+console.log(Data.boards)
+
 const createHeader = (board) => {
   const headerElement = createElement("header", ["header"]);
 
   const logoContainer = createElement("div", ["header-logo-container"]);
   headerElement.appendChild(logoContainer);
 
+  const headerContainer = createElement("div", ["header-container"]);
+  headerElement.appendChild(headerContainer);
+
   const boardName = createElement("span", ["heading-xl"]);
   boardName.innerHTML = board.name;
-  headerElement.appendChild(boardName);
+  headerContainer.appendChild(boardName);
 
-  const addNewTask = createElement("button", ["button-primary-l"]);
+  const addNewTask = createElement("button", ["button-primary-l", "heading-m"]);
   addNewTask.innerHTML = "+ Add New Task";
-  headerElement.appendChild(addNewTask);
+  headerContainer.appendChild(addNewTask);
 
   addNewTask.addEventListener("click", () =>
     root.appendChild(createTaskAdd(board))
@@ -278,39 +283,99 @@ const createNewBoardPopup = (boards) => {
   return newBoardPoup;
 };
 
+const createNewColumnPopup = (board) => {
+  const newColumn = {
+    name: "",
+    tasks: [],
+  }
+
+  const popup = createElement("div", ["popup"]);
+
+  const popupTitle = createElement("span", ["heading-l"])
+  popupTitle.innerHTML = "Add New Column";
+  popup.appendChild(popupTitle);
+
+  const columnInputContainer = createElement("div", ["inputs-container"]);
+  popup.appendChild(columnInputContainer);
+
+  const columnNameTitle = createElement("span", ["body-m"]);
+  columnNameTitle.innerHTML = "Name";
+  columnInputContainer.appendChild(columnNameTitle);
+
+  const columnNameInput = createElement("input", ["input-container"]);
+  columnNameInput.type = "text";
+  columnNameInput.value = newColumn.name;
+  columnInputContainer.appendChild(columnNameInput);
+
+  columnNameInput.addEventListener("input", (e) => {
+    newColumn.name = e.target.value;
+  })
+
+  const createColumnButton = createElement("button", ["button-primary-l"]);
+  createColumnButton.innerHTML = "Create Column";
+  popup.appendChild(createColumnButton);
+
+  createColumnButton.addEventListener("click", (e) => {
+    board.columns.push(newColumn);
+    renderApp(Data, currentBoard);
+  });
+
+  return popup;
+}
+
 const createBoard = (board) => {
   if (document.querySelector(".board-element"))
     document.querySelector(".board-element").remove();
 
   const boardElement = createElement("div", ["board-element"]);
 
-  const boardsContainer = createElement("div", ["boards-container"]);
-  boardElement.appendChild(boardsContainer);
+  board.columns.length === 0
+  ? (() => {
 
-  board.columns.forEach((column) => {
-    const columnElement = createElement("div", ["column-element"]);
+    const boardEmptyContainer = createElement("div", ["board-empty-container"]);
+    boardElement.appendChild(boardEmptyContainer);
 
-    const columnName = createElement("span", ["column-name", "heading-s"]);
-    columnName.innerHTML = column.name;
-    columnElement.appendChild(columnName);
+    const boardTitle = createElement("span", ["heading-l"]);
+    boardTitle.innerHTML = "This board is empty. Create a new column to get started.";
+    boardEmptyContainer.appendChild(boardTitle);
 
-    column.tasks.forEach((task) => {
-      task.id = uniqid();
-      const taskElement = createElement("div", ["task-element"]);
+    const createTaskButton = createElement("button", ["button-primary-l"]);
+    createTaskButton.innerHTML = "+ Add New Column";
+    boardEmptyContainer.appendChild(createTaskButton);
 
-      const taskTitle = createElement("span", ["task-title", "heading-m"]);
-      taskTitle.innerHTML = task.title;
-      taskElement.appendChild(taskTitle);
-
-      columnElement.appendChild(taskElement);
-
-      taskElement.addEventListener("click", (e) =>
-        root.appendChild(createTaskDetail(task, board))
-      );
+    createTaskButton.addEventListener("click", (e) => {
+      root.appendChild(createNewColumnPopup(board));
     });
+  })()
+  : (() => {
+    const boardsContainer = createElement("div", ["boards-container"]);
+    boardElement.appendChild(boardsContainer);
 
-    boardsContainer.appendChild(columnElement);
-  });
+    board.columns.forEach((column) => {
+      const columnElement = createElement("div", ["column-element"]);
+
+      const columnName = createElement("span", ["column-name", "heading-s"]);
+      columnName.innerHTML = column.name;
+      columnElement.appendChild(columnName);
+
+      column.tasks.forEach((task) => {
+        task.id = uniqid();
+        const taskElement = createElement("div", ["task-element"]);
+
+        const taskTitle = createElement("span", ["task-title", "heading-m"]);
+        taskTitle.innerHTML = task.title;
+        taskElement.appendChild(taskTitle);
+
+        columnElement.appendChild(taskElement);
+
+        taskElement.addEventListener("click", (e) =>
+          root.appendChild(createTaskDetail(task, board))
+        );
+      });
+
+      boardsContainer.appendChild(columnElement);
+    });
+  })()
 
   return boardElement;
 };
@@ -467,10 +532,6 @@ window.addEventListener("keydown", (e) => {
 
 export { createBoard, createTaskEdit, createElement };
 
-// Create createDropdown Function !!!
 // Update Header !!!
 // Add Media Queries !!!
 // Add dark mode !!!
-// Update Checkboxes !!!
-
-// description in task is breaking !!!!
