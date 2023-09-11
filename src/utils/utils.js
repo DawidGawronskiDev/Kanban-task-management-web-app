@@ -1,4 +1,4 @@
-import { createBoard, createTaskEdit } from "../main";
+import { createBoard, createTaskEdit, localStorageKey, Data } from "../main";
 
 const handleTaskStatusChange = (taskId, newStatus, board) => {
   for (const column of board.columns) {
@@ -9,6 +9,7 @@ const handleTaskStatusChange = (taskId, newStatus, board) => {
       const targetColumn = board.columns.find((col) => col.name === newStatus);
       targetColumn.tasks.push(task);
       root.appendChild(createBoard(board));
+      localStorage.setItem(localStorageKey, JSON.stringify(Data));
       break;
     }
   }
@@ -21,12 +22,14 @@ const handleTaskDelete = (taskId, board) => {
       column.tasks.splice(taskIndex, 1);
       document.querySelector(".popup").remove();
       root.appendChild(createBoard(board));
+      localStorage.setItem(localStorageKey, JSON.stringify(Data));
     }
   }
 };
 
 const handleSubtaskDelete = (subtaskIndex, task, board) => {
   task.subtasks.splice(subtaskIndex, 1);
+  localStorage.setItem(localStorageKey, JSON.stringify(Data));
   root.appendChild(createTaskEdit(task, board));
 };
 
@@ -59,6 +62,7 @@ const handleTaskSave = (taskId, board) => {
     const taskIndex = column.tasks.findIndex((task) => task.id === taskId);
     if (taskIndex !== -1) {
       column.tasks[taskIndex] = editedTaskData;
+      localStorage.setItem(localStorageKey, JSON.stringify(Data));
       root.appendChild(createBoard(board));
       break;
     }

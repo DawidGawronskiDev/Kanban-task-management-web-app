@@ -10,6 +10,21 @@ import createDropdown from "./components/Dropdown/Dropdown";
 import createSubtasksEdit from "./components/Subtasks/SubtasksEdit";
 import createSubtasksDetail from "./components/Subtasks/SubtasksDetail";
 
+// Define a key for your data in localStorage
+const localStorageKey = "myData";
+
+// Check if data exists in localStorage, and initialize it if it doesn't
+let localStorageData = localStorage.getItem(localStorageKey);
+
+// If data doesn't exist, use the default data from data.json
+if (!localStorageData) {
+  localStorageData = JSON.stringify(Data);
+  localStorage.setItem(localStorageKey, localStorageData);
+} else {
+  // If data exists in localStorage, parse it
+  Data = JSON.parse(localStorageData);
+}
+
 const root = document.querySelector("#root");
 let currentBoard = Data.boards[0];
 
@@ -118,6 +133,7 @@ const createTaskAdd = (board) => {
 
     taskColumn.tasks.push(newTask);
 
+    localStorage.setItem(localStorageKey, JSON.stringify(Data));
     renderApp(Data, currentBoard);
   });
 
@@ -168,7 +184,7 @@ const renderBoardListElements = (boards) => {
     boardList.appendChild(createBoardListElement(board))
   );
 
-  const newBoard = createElement("li", ["new-board-buton"]);
+  const newBoard = createElement("li", ["new-board-button"]);
   newBoard.innerHTML = "+ Add New Board";
   boardList.appendChild(newBoard);
 
@@ -240,6 +256,7 @@ const createNewBoardPopup = (boards) => {
     columnDelete.addEventListener("click", (e) => {
       const columnIndex = newBoard.columns.indexOf(column);
       newBoard.columns.splice(columnIndex, 1);
+      localStorage.setItem(localStorageKey, JSON.stringify(Data));
       createColumnInputs();
     });
 
@@ -265,6 +282,7 @@ const createNewBoardPopup = (boards) => {
 
   addColumn.addEventListener("click", (e) => {
     newBoard.columns.push({ name: "", tasks: [] });
+    localStorage.setItem(localStorageKey, JSON.stringify(Data));
     createColumnInputs();
   });
 
@@ -277,6 +295,7 @@ const createNewBoardPopup = (boards) => {
 
   createNewBoard.addEventListener("click", (e) => {
     boards.push(newBoard);
+    localStorage.setItem(localStorageKey, JSON.stringify(Data));
     renderApp(Data, currentBoard);
   });
 
@@ -317,6 +336,7 @@ const createNewColumnPopup = (board) => {
 
   createColumnButton.addEventListener("click", (e) => {
     board.columns.push(newColumn);
+    localStorage.setItem(localStorageKey, JSON.stringify(Data));
     renderApp(Data, currentBoard);
   });
 
@@ -502,6 +522,7 @@ const createTaskEdit = (task, board) => {
   saveTaskButton.addEventListener("click", (e) => {
     task = newTask;
     handleTaskStatusChange(task.id, newTask.status, currentBoard);
+    localStorage.setItem(localStorageKey, JSON.stringify(Data));
     renderApp(Data, currentBoard);
   });
 
@@ -530,8 +551,9 @@ window.addEventListener("keydown", (e) => {
     document.querySelector(".popup").remove();
 });
 
-export { createBoard, createTaskEdit, createElement };
+export { createBoard, createTaskEdit, createElement, localStorageKey, Data };
 
 // Update Header !!!
 // Add Media Queries !!!
 // Add dark mode !!!
+// Add Validation !!!!!!!!!!!!
