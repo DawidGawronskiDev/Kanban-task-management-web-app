@@ -6,7 +6,7 @@ const createSubtasksDetail = (container, task) => {
   container.appendChild(subtasksTitle);
 
   task.subtasks.forEach((subtask) => {
-    const subtaskContainerItem = createElement("div", ["input-container"]);
+    const subtaskContainerItem = createElement("div", ["input-container", ["subtask-container"]]);
     subtaskContainerItem.dataset.isCompleted = subtask.isCompleted;
     container.appendChild(subtaskContainerItem);
 

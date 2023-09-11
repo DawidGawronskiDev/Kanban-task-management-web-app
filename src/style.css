@@ -307,6 +307,65 @@ input[type="text"] {
   width: 100%;
 }
 
+.task-label {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.subtask-container {
+  background-color: var(--light-grey-lb);
+
+  padding: 12px;
+}
+
+.input-container input[type="checkbox"] {
+  appearance: none;
+  aspect-ratio: 1 / 1;
+  width: 16px;
+
+  background-color: var(--white);
+
+  border: 1px solid var(--medium-grey);
+
+  border-radius: 2px;
+}
+
+.input-container input[type="checkbox"]:focus {
+  outline: none;
+}
+
+.input-container input[type="checkbox"]:checked {
+
+  display: grid;
+
+  background-color: var(--main-purple);
+  border: 1px solid var(--main-purple);
+}
+
+.input-container input[type="checkbox"]:checked::after {
+  align-self: center;
+
+  content: "";
+  aspect-ratio: 1 / 1;
+  width: 100%;
+
+  -webkit-mask-image: url("./assets/icon-check.svg");
+  mask-image: url("./assets/icon-check.svg");
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: 66%;
+  mask-size: 66%;
+
+  background-color: var(--white);
+}
+
+.input-container input[type="checkbox"]:checked + * {
+  color: var(--medium-grey);
+  text-decoration: line-through;
+}
+
 .input-container input[type="text"] {
   width: 100%;
 }
