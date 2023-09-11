@@ -8,7 +8,7 @@ import {
   handleTaskSave,
 } from "./utils/utils";
 
-console.log(Data);
+import createDropdown from "./components/Dropdown/Dropdown";
 
 const root = document.querySelector("#root");
 let currentBoard = Data.boards[0];
@@ -103,12 +103,13 @@ const createTaskAdd = (board) => {
   subtasksContainer.appendChild(subtasksTitle);
 
   const renderSubtaks = () => {
-    (subtasksContainer.innerHTML = ""),
+      subtasksContainer.innerHTML = "";
       newTask.subtasks.forEach((subtask) => {
         const subtaskInputContainer = createElement("div", ["input-container"]);
         subtasksContainer.appendChild(subtaskInputContainer);
 
         const subtaskInput = createElement("input", ["input-container"]);
+        subtaskInput.value = subtask.title;
         subtaskInput.type = "text";
         subtaskInput.placeholder = "e.g. Make coffee";
         subtaskInputContainer.appendChild(subtaskInput);
@@ -143,57 +144,12 @@ const createTaskAdd = (board) => {
         isCompleted: false,
         title: "",
       });
-
       renderSubtaks();
     });
   };
   renderSubtaks();
 
-  const statusContainer = document.createElement("div");
-  statusContainer.classList.add("inputs-container");
-  taskAddElement.appendChild(statusContainer);
-
-  const statusTitle = document.createElement("span");
-  statusTitle.classList.add("body-m");
-  statusTitle.innerHTML = "Status";
-  statusContainer.appendChild(statusTitle);
-
-  const statusDropdown = document.createElement("div");
-  statusDropdown.classList.add("dropdown");
-  statusContainer.appendChild(statusDropdown);
-
-  statusDropdown.addEventListener("click", (e) => {
-    const statusDropdownOptions = document.querySelector(
-      ".status-dropdown-options"
-    );
-
-    statusDropdownOptions.dataset.visible === "false"
-      ? (statusDropdownOptions.dataset.visible = "true")
-      : (statusDropdownOptions.dataset.visible = "false");
-  });
-
-  const statusDropdownTitle = document.createElement("div");
-  statusDropdownTitle.classList.add("status-dropdown-title", "body-l");
-  statusDropdownTitle.innerHTML = currentBoard.columns[0].name;
-  statusDropdown.appendChild(statusDropdownTitle);
-
-  const statusDropdownOptions = document.createElement("ul");
-  statusDropdownOptions.classList.add("status-dropdown-options");
-  statusDropdownOptions.dataset.visible = false;
-  statusDropdown.appendChild(statusDropdownOptions);
-
-  currentBoard.columns.forEach((column) => {
-    const statusDropdownOption = document.createElement("li");
-    statusDropdownOption.classList.add("status-dropdown-option", "body-l");
-    statusDropdownOption.innerHTML = column.name;
-    statusDropdownOptions.appendChild(statusDropdownOption);
-
-    statusDropdownOption.addEventListener("click", (e) => {
-      const newStatus = e.target.innerHTML;
-      newTask.status = newStatus;
-      statusDropdownTitle.innerHTML = newStatus;
-    });
-  });
+  taskAddElement.appendChild(createDropdown(currentBoard, newTask, false));
 
   const createTaskButton = createElement("button", ["button-primary-l"]);
   createTaskButton.innerHTML = "Create Task";
@@ -492,53 +448,7 @@ const createTaskDetail = (task, board) => {
     subtaskContainerItem.appendChild(taskLabel);
   });
 
-  const statusContainer = document.createElement("div");
-  statusContainer.classList.add("inputs-container");
-  taskDetailElement.appendChild(statusContainer);
-
-  const statusTitle = document.createElement("span");
-  statusTitle.classList.add("body-m");
-  statusTitle.innerHTML = "CurrentStatus";
-  statusContainer.appendChild(statusTitle);
-
-  const statusDropdown = document.createElement("div");
-  statusDropdown.classList.add("dropdown");
-  statusContainer.appendChild(statusDropdown);
-
-  statusDropdown.addEventListener("click", (e) => {
-    const statusDropdownOptions = document.querySelector(
-      ".status-dropdown-options"
-    );
-
-    statusDropdownOptions.dataset.visible === "false"
-      ? (statusDropdownOptions.dataset.visible = "true")
-      : (statusDropdownOptions.dataset.visible = "false");
-  });
-
-  const statusDropdownTitle = document.createElement("div");
-  statusDropdownTitle.classList.add("status-dropdown-title", "body-l");
-  statusDropdownTitle.innerHTML = task.status;
-  statusDropdown.appendChild(statusDropdownTitle);
-
-  const statusDropdownOptions = document.createElement("ul");
-  statusDropdownOptions.classList.add("status-dropdown-options");
-  statusDropdownOptions.dataset.visible = false;
-  statusDropdown.appendChild(statusDropdownOptions);
-
-  board.columns.forEach((column) => {
-    const statusDropdownOption = document.createElement("li");
-    statusDropdownOption.classList.add("status-dropdown-option", "body-l");
-    statusDropdownOption.innerHTML = column.name;
-    statusDropdownOptions.appendChild(statusDropdownOption);
-
-    statusDropdownOption.addEventListener("click", (e) => {
-      const newStatus = e.target.innerHTML;
-      if (newStatus !== task.status) {
-        statusDropdownTitle.innerHTML = newStatus;
-        handleTaskStatusChange(task.id, newStatus, board);
-      }
-    });
-  });
+  taskDetailElement.appendChild(createDropdown(board, task, true))
 
   return taskDetailElement;
 };
@@ -548,6 +458,8 @@ const createTaskEdit = (task, board) => {
 
   if (popup) popup.remove();
   const taskEditElement = createElement("div", ["task-edit", "popup"]);
+
+  const newTask = task;
 
   const popupTitle = createElement("span", ["heading-l"]);
   popupTitle.innerHTML = "Edit Task";
@@ -562,8 +474,12 @@ const createTaskEdit = (task, board) => {
 
   const titleContainerInput = createElement("input", ["title-container-input"]);
   titleContainerInput.type = "text";
-  titleContainerInput.value = task.title;
+  titleContainerInput.value = newTask.title;
   titleContainer.appendChild(titleContainerInput);
+
+  titleContainerInput.addEventListener("input", (e) => {
+    newTask.title = e.target.value;
+  })
 
   const descriptionContainer = createElement("div", ["inputs-container"]);
   taskEditElement.appendChild(descriptionContainer);
@@ -577,7 +493,12 @@ const createTaskEdit = (task, board) => {
     "body-l",
   ]);
   descriptionContainerInput.placeholder = `e.g. It’s always good to take a break.`;
+  descriptionContainerInput.value = newTask.description;
   descriptionContainer.appendChild(descriptionContainerInput);
+
+  descriptionContainerInput.addEventListener("input", (e) => {
+    newTask.description = e.target.value;
+  })
 
   const subtasksContainer = createElement("span", ["inputs-container"]);
   taskEditElement.appendChild(subtasksContainer);
@@ -616,61 +537,17 @@ const createTaskEdit = (task, board) => {
     root.appendChild(createTaskEdit(task, board));
   });
 
-  const statusContainer = createElement("div", ["status-container"]);
-  taskEditElement.appendChild(statusContainer);
+  taskEditElement.appendChild(createDropdown(board, newTask, false));
 
-  const statusTitle = createElement("span", ["body-m"]);
-  statusTitle.innerHTML = "CurrentStatus";
-  statusContainer.appendChild(statusTitle);
+  const saveTaskButton = createElement("button", ["button-primary-l"]);
+  saveTaskButton.innerHTML = "Save Changes";
+  taskEditElement.appendChild(saveTaskButton);
 
-  const statusDropdown = createElement("div", ["dropdown"]);
-  statusContainer.appendChild(statusDropdown);
-
-  statusDropdown.addEventListener("click", (e) => {
-    const statusDropdownOptions = document.querySelector(
-      ".status-dropdown-options"
-    );
-
-    statusDropdownOptions.dataset.visible === "false"
-      ? (statusDropdownOptions.dataset.visible = "true")
-      : (statusDropdownOptions.dataset.visible = "false");
+  saveTaskButton.addEventListener("click", (e) => {
+    task = newTask;
+    handleTaskStatusChange(task.id, newTask.status, currentBoard);
+    renderApp(Data, currentBoard);
   });
-
-  const statusDropdownTitle = createElement("div", ["status-dropdown-title"]);
-  statusDropdownTitle.innerHTML = task.status;
-  statusDropdown.appendChild(statusDropdownTitle);
-
-  const statusDropdownOptions = createElement("ul", [
-    "status-dropdown-options",
-  ]);
-  statusDropdownOptions.dataset.visible = false;
-  statusDropdown.appendChild(statusDropdownOptions);
-
-  board.columns.forEach((column) => {
-    const statusDropdownOption = createElement("li", [
-      "status-dropdown-option",
-    ]);
-    statusDropdownOption.innerHTML = column.name;
-    statusDropdownOptions.appendChild(statusDropdownOption);
-
-    statusDropdownOption.addEventListener("click", (e) => {
-      const newStatus = e.target.innerHTML;
-      if (newStatus !== task.status) {
-        statusDropdownTitle.innerHTML = newStatus;
-        handleTaskStatusChange(task.id, newStatus, board);
-      }
-    });
-  });
-
-  const taskSave = createElement("button", ["task-save", "button-primary-s"]);
-  taskSave.innerHTML = "Save Changes";
-  taskEditElement.appendChild(taskSave);
-
-  taskSave.addEventListener("click", (e) => {
-    handleTaskSave(task.id, board);
-  });
-
-  console.log(task);
 
   return taskEditElement;
 };
