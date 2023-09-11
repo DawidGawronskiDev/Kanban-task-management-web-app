@@ -4,11 +4,11 @@ import uniqid from "uniqid";
 import {
   handleTaskStatusChange,
   handleTaskDelete,
-  handleSubtaskDelete,
-  handleTaskSave,
 } from "./utils/utils";
 
 import createDropdown from "./components/Dropdown/Dropdown";
+import createSubtasksEdit from "./components/Subtasks/SubtasksEdit";
+import createSubtasksDetail from "./components/Subtasks/SubtasksDetail";
 
 const root = document.querySelector("#root");
 let currentBoard = Data.boards[0];
@@ -98,56 +98,7 @@ const createTaskAdd = (board) => {
   const subtasksContainer = createElement("div", ["inputs-container"]);
   taskAddElement.appendChild(subtasksContainer);
 
-  const subtasksTitle = createElement("span", ["body-m"]);
-  subtasksTitle.innerHTML = "Subtasks";
-  subtasksContainer.appendChild(subtasksTitle);
-
-  const renderSubtaks = () => {
-      subtasksContainer.innerHTML = "";
-      newTask.subtasks.forEach((subtask) => {
-        const subtaskInputContainer = createElement("div", ["input-container"]);
-        subtasksContainer.appendChild(subtaskInputContainer);
-
-        const subtaskInput = createElement("input", ["input-container"]);
-        subtaskInput.value = subtask.title;
-        subtaskInput.type = "text";
-        subtaskInput.placeholder = "e.g. Make coffee";
-        subtaskInputContainer.appendChild(subtaskInput);
-
-        subtaskInput.addEventListener("input", (e) => {
-          subtask.title = e.target.value;
-          console.log(newTask);
-        });
-
-        const subtaskDelete = createElement("button", ["delete-button"]);
-        subtaskInputContainer.appendChild(subtaskDelete);
-
-        subtaskDelete.addEventListener("click", (e) => {
-          const deleteButtons = Array.from(
-            document.querySelectorAll(".delete-button")
-          );
-          const buttonIndex = deleteButtons.indexOf(e.target);
-
-          console.log(deleteButtons, buttonIndex);
-
-          newTask.subtasks.splice(buttonIndex, 1);
-          renderSubtaks();
-        });
-      });
-
-    const addSubtaskButton = createElement("button", ["button-secondary"]);
-    addSubtaskButton.innerHTML = "+ Add Subtask";
-    subtasksContainer.appendChild(addSubtaskButton);
-
-    addSubtaskButton.addEventListener("click", () => {
-      newTask.subtasks.push({
-        isCompleted: false,
-        title: "",
-      });
-      renderSubtaks();
-    });
-  };
-  renderSubtaks();
+  createSubtasksEdit(subtasksContainer, newTask);
 
   taskAddElement.appendChild(createDropdown(currentBoard, newTask, false));
 
@@ -418,35 +369,7 @@ const createTaskDetail = (task, board) => {
   const subtaskContainer = createElement("div", ["inputs-container"]);
   taskDetailElement.appendChild(subtaskContainer);
 
-  const subtasksTitle = createElement("span", ["subtask-title", "body-m"]);
-  subtasksTitle.innerHTML = "Subtasks";
-  subtaskContainer.appendChild(subtasksTitle);
-
-  task.subtasks.forEach((subtask) => {
-    const subtaskContainerItem = createElement("div", ["input-container"]);
-    subtaskContainerItem.dataset.isCompleted = subtask.isCompleted;
-    subtaskContainer.appendChild(subtaskContainerItem);
-
-    const subtaskCheckbox = createElement("input", ["subtask-checkbox"]);
-    subtaskCheckbox.type = "checkbox";
-    if (subtask.isCompleted) subtaskCheckbox.checked = true;
-    subtaskContainerItem.appendChild(subtaskCheckbox);
-
-    subtaskCheckbox.addEventListener("click", (e) => {
-      e.target.checked === true
-        ? (subtask.isCompleted = true)
-        : (subtask.isCompleted = false);
-
-      subtaskContainerItem.dataset.isCompleted = e.target.checked;
-
-      console.log(subtask);
-    });
-
-    const taskLabel = document.createElement("label");
-    taskLabel.classList.add("task-label");
-    taskLabel.innerHTML = subtask.title;
-    subtaskContainerItem.appendChild(taskLabel);
-  });
+  createSubtasksDetail(subtaskContainer, task)
 
   taskDetailElement.appendChild(createDropdown(board, task, true))
 
@@ -503,39 +426,7 @@ const createTaskEdit = (task, board) => {
   const subtasksContainer = createElement("span", ["inputs-container"]);
   taskEditElement.appendChild(subtasksContainer);
 
-  task.subtasks.forEach((subtask) => {
-    const subtaskContainer = createElement("div", ["input-container"]);
-    subtasksContainer.appendChild(subtaskContainer);
-
-    const subtaskInput = createElement("input", ["subtask-input"]);
-    subtaskInput.type = "text";
-    subtaskInput.value = subtask.title;
-    subtaskContainer.appendChild(subtaskInput);
-
-    const subtaskDelete = createElement("button", ["delete-button"]);
-    subtaskContainer.appendChild(subtaskDelete);
-
-    subtaskDelete.addEventListener("click", (e) => {
-      const subtaskContainerItem = e.target.parentElement;
-      const subtaskIndex = Array.from(
-        subtaskContainerItem.parentElement.children
-      ).indexOf(subtaskContainerItem);
-      handleSubtaskDelete(subtaskIndex, task, board);
-    });
-  });
-
-  const subtasksAdd = createElement("button", [
-    "subtasks-add",
-    "button-secondary",
-  ]);
-  subtasksAdd.innerHTML = "+ Add New Subtask";
-  subtasksContainer.appendChild(subtasksAdd);
-
-  subtasksAdd.addEventListener("click", (e) => {
-    console.log(task.subtasks);
-    task.subtasks.push({ isCompleted: false, title: "" });
-    root.appendChild(createTaskEdit(task, board));
-  });
+  createSubtasksEdit(subtasksContainer, newTask);
 
   taskEditElement.appendChild(createDropdown(board, newTask, false));
 
@@ -574,7 +465,7 @@ window.addEventListener("keydown", (e) => {
     document.querySelector(".popup").remove();
 });
 
-export { createBoard, createTaskEdit };
+export { createBoard, createTaskEdit, createElement };
 
 // Create createDropdown Function !!!
 // Update Header !!!
