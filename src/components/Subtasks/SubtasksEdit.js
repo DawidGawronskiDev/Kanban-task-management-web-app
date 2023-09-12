@@ -12,6 +12,7 @@ const createSubtasksEdit = (container, task) => {
     container.appendChild(subtaskInputContainer)
 
     const subtaskInput = createElement('input', ['input-container'])
+    subtaskInput.setAttribute('required', 'required')
     subtaskInput.value = subtask.title
     subtaskInput.type = 'text'
     subtaskInput.placeholder = 'e.g. Make coffee'
