@@ -1,7 +1,11 @@
 import './style.css'
 import Data from './data.json'
 import uniqid from 'uniqid'
-import { handleTaskStatusChange, handleTaskDelete } from './utils/utils'
+import {
+  handleTaskStatusChange,
+  handleTaskDelete,
+  validateForm
+} from './utils/utils'
 
 import createDropdown from './components/Dropdown/Dropdown'
 import createSubtasksEdit from './components/Subtasks/SubtasksEdit'
@@ -52,10 +56,10 @@ const createHeader = (board) => {
 }
 
 const createTaskAdd = (board) => {
-  const popup = document.querySelector('.popup')
-
-  if (popup) popup.remove()
-  const taskAddElement = createElement('div', ['task-edit', 'popup'])
+  if (document.querySelector('.popup')) {
+    document.querySelector('.popup').remove()
+  }
+  const popup = createElement('form', ['task-edit', 'popup'])
 
   const newTask = {
     description: '',
@@ -75,19 +79,20 @@ const createTaskAdd = (board) => {
 
   const popupTitle = createElement('span', ['heading-l'])
   popupTitle.innerHTML = 'Add New Task'
-  taskAddElement.appendChild(popupTitle)
+  popup.appendChild(popupTitle)
 
   const titleContainer = createElement('div', ['inputs-container'])
-  taskAddElement.appendChild(titleContainer)
+  popup.appendChild(titleContainer)
 
   const titleInputTitle = createElement('span', ['body-m'])
   titleInputTitle.innerHTML = 'Title'
   titleContainer.appendChild(titleInputTitle)
 
-  const titleInput = createElement('input', [])
+  const titleInput = createElement('input', ['input-container'])
+  titleInput.setAttribute('required', 'required')
   titleInput.type = 'text'
   titleInput.placeholder = 'e.g. Take coffee break'
-  titleInput.value = ''
+  titleInput.value = newTask.title
   titleContainer.appendChild(titleInput)
 
   titleInput.addEventListener('input', (e) => {
@@ -96,15 +101,16 @@ const createTaskAdd = (board) => {
   })
 
   const descriptionContainer = createElement('div', ['inputs-container'])
-  taskAddElement.appendChild(descriptionContainer)
+  popup.appendChild(descriptionContainer)
 
   const descriptionInputTitle = createElement('span', ['body-m'])
   descriptionInputTitle.innerHTML = 'Description'
   descriptionContainer.appendChild(descriptionInputTitle)
 
   const descriptionInput = createElement('textarea', [])
+  descriptionInput.setAttribute('required', 'required')
   descriptionInput.placeholder = 'e.g. It’s always good to take a break.'
-  descriptionInput.value = ''
+  descriptionInput.value = newTask.description
   descriptionContainer.appendChild(descriptionInput)
 
   descriptionInput.addEventListener('input', (e) => {
@@ -113,28 +119,35 @@ const createTaskAdd = (board) => {
   })
 
   const subtasksContainer = createElement('div', ['inputs-container'])
-  taskAddElement.appendChild(subtasksContainer)
+  popup.appendChild(subtasksContainer)
 
   createSubtasksEdit(subtasksContainer, newTask)
 
-  taskAddElement.appendChild(createDropdown(currentBoard, newTask, false))
+  popup.appendChild(createDropdown(currentBoard, newTask, false))
 
   const createTaskButton = createElement('button', ['button-primary-l'])
+  createTaskButton.type = 'Submit'
   createTaskButton.innerHTML = 'Create Task'
-  taskAddElement.appendChild(createTaskButton)
+  popup.appendChild(createTaskButton)
 
-  createTaskButton.addEventListener('click', (e) => {
-    const taskColumn = board.columns.find(
-      (column) => column.name === newTask.status
-    )
+  popup.addEventListener('submit', (e) => {
+    e.preventDefault()
 
-    taskColumn.tasks.push(newTask)
+    if (validateForm()) {
+      const taskColumn = board.columns.find(
+        (column) => column.name === newTask.status
+      )
 
-    localStorage.setItem(localStorageKey, JSON.stringify(Data))
-    renderApp(Data, currentBoard)
+      taskColumn.tasks.push(newTask)
+
+      localStorage.setItem(localStorageKey, JSON.stringify(Data))
+      renderApp(Data, currentBoard)
+    } else {
+      console.log('Validation failed')
+    }
   })
 
-  return taskAddElement
+  return popup
 }
 
 const createAside = () => {
