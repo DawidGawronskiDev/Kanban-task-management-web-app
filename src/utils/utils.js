@@ -75,9 +75,24 @@ const handleTaskSave = (taskId, board) => {
   document.querySelector('.popup').remove()
 }
 
+const validateForm = () => {
+  const inputElements = Array.from(
+    document.querySelectorAll('input[type="text"], textarea')
+  )
+
+  inputElements.forEach((elem) => {
+    if (elem.value.trim() === '') {
+      return false
+    }
+  })
+
+  return true
+}
+
 export {
   handleTaskStatusChange,
   handleTaskDelete,
   handleSubtaskDelete,
-  handleTaskSave
+  handleTaskSave,
+  validateForm
 }
