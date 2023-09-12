@@ -1,54 +1,54 @@
-import { createElement } from "../../main";
+import { createElement } from '../../main'
 
 const createSubtasksEdit = (container, task) => {
-    container.innerHTML = "";
+  container.innerHTML = ''
 
-    const subtasksTitle = createElement("span", ["body-m"]);
-    subtasksTitle.innerHTML = "Subtasks";
-    container.appendChild(subtasksTitle);
+  const subtasksTitle = createElement('span', ['body-m'])
+  subtasksTitle.innerHTML = 'Subtasks'
+  container.appendChild(subtasksTitle)
 
-    task.subtasks.forEach((subtask) => {
-      const subtaskInputContainer = createElement("div", ["input-container"]);
-      container.appendChild(subtaskInputContainer);
+  task.subtasks.forEach((subtask) => {
+    const subtaskInputContainer = createElement('div', ['input-container'])
+    container.appendChild(subtaskInputContainer)
 
-      const subtaskInput = createElement("input", ["input-container"]);
-      subtaskInput.value = subtask.title;
-      subtaskInput.type = "text";
-      subtaskInput.placeholder = "e.g. Make coffee";
-      subtaskInputContainer.appendChild(subtaskInput);
+    const subtaskInput = createElement('input', ['input-container'])
+    subtaskInput.value = subtask.title
+    subtaskInput.type = 'text'
+    subtaskInput.placeholder = 'e.g. Make coffee'
+    subtaskInputContainer.appendChild(subtaskInput)
 
-      subtaskInput.addEventListener("input", (e) => {
-        subtask.title = e.target.value;
-      });
+    subtaskInput.addEventListener('input', (e) => {
+      subtask.title = e.target.value
+    })
 
-      const subtaskDelete = createElement("button", ["delete-button"]);
-      subtaskInputContainer.appendChild(subtaskDelete);
+    const subtaskDelete = createElement('button', ['delete-button'])
+    subtaskInputContainer.appendChild(subtaskDelete)
 
-      subtaskDelete.addEventListener("click", (e) => {
-        const deleteButtons = Array.from(
-          document.querySelectorAll(".delete-button")
-        );
-        const buttonIndex = deleteButtons.indexOf(e.target);
+    subtaskDelete.addEventListener('click', (e) => {
+      const deleteButtons = Array.from(
+        document.querySelectorAll('.delete-button')
+      )
+      const buttonIndex = deleteButtons.indexOf(e.target)
 
-        console.log(deleteButtons, buttonIndex);
+      console.log(deleteButtons, buttonIndex)
 
-        task.subtasks.splice(buttonIndex, 1);
-        createSubtasksEdit(container, task);
-      });
-    });
+      task.subtasks.splice(buttonIndex, 1)
+      createSubtasksEdit(container, task)
+    })
+  })
 
-  const addSubtaskButton = createElement("button", ["button-secondary"]);
-  addSubtaskButton.innerHTML = "+ Add Subtask";
-  container.appendChild(addSubtaskButton);
+  const addSubtaskButton = createElement('button', ['button-secondary'])
+  addSubtaskButton.innerHTML = '+ Add Subtask'
+  container.appendChild(addSubtaskButton)
 
-  addSubtaskButton.addEventListener("click", () => {
+  addSubtaskButton.addEventListener('click', () => {
     console.log(task)
     task.subtasks.push({
       isCompleted: false,
-      title: "",
-    });
-    createSubtasksEdit(container, task);
-  });
-};
+      title: ''
+    })
+    createSubtasksEdit(container, task)
+  })
+}
 
-export default createSubtasksEdit;
+export default createSubtasksEdit
