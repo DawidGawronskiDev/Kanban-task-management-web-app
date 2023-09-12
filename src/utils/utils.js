@@ -1,10 +1,13 @@
 import {
   root,
-  createBoard,
-  createTaskEdit,
+  currentBoard,
   localStorageKey,
+  changeCurrentBoard,
+  renderApp,
   Data
 } from '../main'
+
+import createBoard from '../components/Board/Board'
 
 const handleTaskStatusChange = (taskId, newStatus, board) => {
   for (const column of board.columns) {
@@ -89,10 +92,25 @@ const validateForm = () => {
   return true
 }
 
+const handleChangeBoard = () => {
+  const boardListElements = Array.from(
+    document.querySelectorAll('.board-list-element')
+  )
+
+  boardListElements.forEach((element) => {
+    element.addEventListener('click', (e) => {
+      const indexOfElement = boardListElements.indexOf(element)
+      changeCurrentBoard(indexOfElement)
+      renderApp(Data, currentBoard)
+    })
+  })
+}
+
 export {
   handleTaskStatusChange,
   handleTaskDelete,
   handleSubtaskDelete,
   handleTaskSave,
-  validateForm
+  validateForm,
+  handleChangeBoard
 }
