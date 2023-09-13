@@ -106,11 +106,17 @@ const handleChangeBoard = () => {
   })
 }
 
+const removePopup = () => {
+  const popup = document.querySelector('.popup')
+  if (popup) popup.remove()
+}
+
 export {
   handleTaskStatusChange,
   handleTaskDelete,
   handleSubtaskDelete,
   handleTaskSave,
   validateForm,
-  handleChangeBoard
+  handleChangeBoard,
+  removePopup
 }

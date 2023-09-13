@@ -1,12 +1,11 @@
 import { localStorageKey, Data, renderApp, createElement } from '../../main'
-import { validateForm } from '../../utils/utils'
+import { validateForm, removePopup } from '../../utils/utils'
 import createSubtasksEdit from '../Subtasks/SubtasksEdit'
 import createDropdown from '../Dropdown/Dropdown'
 
 const createPopupTaskAdd = (board) => {
-  if (document.querySelector('.popup')) {
-    document.querySelector('.popup').remove()
-  }
+  removePopup()
+
   const popup = createElement('form', ['task-edit', 'popup'])
 
   const newTask = {

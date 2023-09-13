@@ -7,12 +7,11 @@ import {
 } from '../../main'
 import createSubtasksEdit from '../Subtasks/SubtasksEdit'
 import createDropdown from '../Dropdown/Dropdown'
-import { handleTaskStatusChange } from '../../utils/utils'
+import { handleTaskStatusChange, removePopup } from '../../utils/utils'
 
 const createPopupTaskEdit = (task, board) => {
-  const popup = document.querySelector('.popup')
+  removePopup()
 
-  if (popup) popup.remove()
   const taskEditElement = createElement('div', ['task-edit', 'popup'])
 
   const newTask = task

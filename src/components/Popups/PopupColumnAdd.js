@@ -6,13 +6,17 @@ import {
   renderApp
 } from '../../main'
 
+import { removePopup } from '../../utils/utils'
+
 const createPopupColumnAdd = (board) => {
+  removePopup()
+
+  const popup = createElement('div', ['popup'])
+
   const newColumn = {
     name: '',
     tasks: []
   }
-
-  const popup = createElement('div', ['popup'])
 
   const popupTitle = createElement('span', ['heading-l'])
   popupTitle.innerHTML = 'Add New Column'

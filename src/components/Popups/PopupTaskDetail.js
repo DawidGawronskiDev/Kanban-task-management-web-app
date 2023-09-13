@@ -1,14 +1,13 @@
 import { root, createElement } from '../../main'
-import { handleTaskDelete } from '../../utils/utils'
+import { handleTaskDelete, removePopup } from '../../utils/utils'
 
 import createPopupTaskEdit from './PopupTaskEdit'
 import createSubtasksDetail from '../Subtasks/SubtasksDetail'
 import createDropdown from '../Dropdown/Dropdown'
 
 const createPopupTaskDetail = (task, board) => {
-  const popup = document.querySelector('.popup')
+  removePopup()
 
-  if (popup) popup.remove()
   const taskDetailElement = createElement('div', ['task-detail', 'popup'])
 
   const taskTitleContainer = createElement('div', ['input-container'])

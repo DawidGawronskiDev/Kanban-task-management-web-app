@@ -6,17 +6,17 @@ import {
   renderApp
 } from '../../main'
 
+import { removePopup } from '../../utils/utils'
+
 const createPopupBoardAdd = (boards) => {
-  console.log(boards)
-  const popup = document.querySelector('.popup')
-  if (popup) popup.remove()
+  removePopup()
+
+  const newBoardPoup = createElement('div', ['new-board-popup', 'popup'])
 
   const newBoard = {
     name: '',
     columns: [{ name: '', tasks: [] }]
   }
-
-  const newBoardPoup = createElement('div', ['new-board-popup', 'popup'])
   const popupTitle = createElement('span', ['popup-title', 'heading-l'])
   popupTitle.innerHTML = 'Add New Board'
   newBoardPoup.appendChild(popupTitle)
