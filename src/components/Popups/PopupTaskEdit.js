@@ -12,16 +12,16 @@ import { handleTaskStatusChange, removePopup } from '../../utils/utils'
 const createPopupTaskEdit = (task, board) => {
   removePopup()
 
-  const taskEditElement = createElement('div', ['task-edit', 'popup'])
+  const popup = createElement('div', ['task-edit', 'popup'])
 
   const newTask = task
 
   const popupTitle = createElement('span', ['heading-l'])
   popupTitle.innerHTML = 'Edit Task'
-  taskEditElement.appendChild(popupTitle)
+  popup.appendChild(popupTitle)
 
   const titleContainer = createElement('div', ['inputs-container'])
-  taskEditElement.appendChild(titleContainer)
+  popup.appendChild(titleContainer)
 
   const titleContainerHeading = createElement('span', ['body-m'])
   titleContainerHeading.innerHTML = 'Title'
@@ -37,7 +37,7 @@ const createPopupTaskEdit = (task, board) => {
   })
 
   const descriptionContainer = createElement('div', ['inputs-container'])
-  taskEditElement.appendChild(descriptionContainer)
+  popup.appendChild(descriptionContainer)
 
   const descriptionContainerHeading = createElement('span', ['body-m'])
   descriptionContainerHeading.innerHTML = 'Description'
@@ -57,15 +57,15 @@ const createPopupTaskEdit = (task, board) => {
   })
 
   const subtasksContainer = createElement('span', ['inputs-container'])
-  taskEditElement.appendChild(subtasksContainer)
+  popup.appendChild(subtasksContainer)
 
   createSubtasksEdit(subtasksContainer, newTask)
 
-  taskEditElement.appendChild(createDropdown(board, newTask, false))
+  popup.appendChild(createDropdown(board, newTask, false))
 
   const saveTaskButton = createElement('button', ['button-primary-l'])
   saveTaskButton.innerHTML = 'Save Changes'
-  taskEditElement.appendChild(saveTaskButton)
+  popup.appendChild(saveTaskButton)
 
   saveTaskButton.addEventListener('click', (e) => {
     task = newTask
@@ -74,7 +74,7 @@ const createPopupTaskEdit = (task, board) => {
     renderApp(Data, currentBoard)
   })
 
-  return taskEditElement
+  return popup
 }
 
 export default createPopupTaskEdit

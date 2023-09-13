@@ -11,7 +11,7 @@ import { removePopup } from '../../utils/utils'
 const createPopupBoardAdd = (boards) => {
   removePopup()
 
-  const newBoardPoup = createElement('div', ['new-board-popup', 'popup'])
+  const popup = createElement('div', ['new-board-popup', 'popup'])
 
   const newBoard = {
     name: '',
@@ -19,10 +19,10 @@ const createPopupBoardAdd = (boards) => {
   }
   const popupTitle = createElement('span', ['popup-title', 'heading-l'])
   popupTitle.innerHTML = 'Add New Board'
-  newBoardPoup.appendChild(popupTitle)
+  popup.appendChild(popupTitle)
 
   const nameInputContainer = createElement('div', ['inputs-container'])
-  newBoardPoup.appendChild(nameInputContainer)
+  popup.appendChild(nameInputContainer)
 
   const nameInputTitle = createElement('span', ['body-m'])
   nameInputTitle.innerHTML = 'Name'
@@ -42,7 +42,7 @@ const createPopupBoardAdd = (boards) => {
   })
 
   const columnsInputContainer = createElement('div', ['inputs-container'])
-  newBoardPoup.appendChild(columnsInputContainer)
+  popup.appendChild(columnsInputContainer)
 
   const columnsInputContainerTitle = createElement('span', ['body-m'])
   columnsInputContainerTitle.innerHTML = 'Columns'
@@ -89,7 +89,7 @@ const createPopupBoardAdd = (boards) => {
 
   const addColumn = createElement('button', ['add-column', 'button-secondary'])
   addColumn.innerHTML = '+ Add New Column'
-  newBoardPoup.appendChild(addColumn)
+  popup.appendChild(addColumn)
 
   addColumn.addEventListener('click', (e) => {
     newBoard.columns.push({ name: '', tasks: [] })
@@ -102,7 +102,7 @@ const createPopupBoardAdd = (boards) => {
     'button-primary-s'
   ])
   createNewBoard.innerHTML = 'Create New Board'
-  newBoardPoup.appendChild(createNewBoard)
+  popup.appendChild(createNewBoard)
 
   createNewBoard.addEventListener('click', (e) => {
     boards.push(newBoard)
@@ -110,7 +110,7 @@ const createPopupBoardAdd = (boards) => {
     renderApp(Data, currentBoard)
   })
 
-  return newBoardPoup
+  return popup
 }
 
 export default createPopupBoardAdd

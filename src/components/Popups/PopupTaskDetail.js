@@ -8,10 +8,10 @@ import createDropdown from '../Dropdown/Dropdown'
 const createPopupTaskDetail = (task, board) => {
   removePopup()
 
-  const taskDetailElement = createElement('div', ['task-detail', 'popup'])
+  const popup = createElement('div', ['task-detail', 'popup'])
 
   const taskTitleContainer = createElement('div', ['input-container'])
-  taskDetailElement.appendChild(taskTitleContainer)
+  popup.appendChild(taskTitleContainer)
 
   const taskTitle = createElement('span', ['heading-l'])
   taskTitle.innerHTML = task.title
@@ -53,16 +53,16 @@ const createPopupTaskDetail = (task, board) => {
 
   const taskDescription = createElement('span', ['body-l'])
   taskDescription.innerHTML = task.description
-  taskDetailElement.appendChild(taskDescription)
+  popup.appendChild(taskDescription)
 
   const subtaskContainer = createElement('div', ['inputs-container'])
-  taskDetailElement.appendChild(subtaskContainer)
+  popup.appendChild(subtaskContainer)
 
   createSubtasksDetail(subtaskContainer, task)
 
-  taskDetailElement.appendChild(createDropdown(board, task, true))
+  popup.appendChild(createDropdown(board, task, true))
 
-  return taskDetailElement
+  return popup
 }
 
 export default createPopupTaskDetail
