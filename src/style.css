@@ -163,6 +163,59 @@ main {
   font-weight: 700;
 }
 
+/* Board Options */
+.options-container {
+  position: relative;
+}
+
+.toggle-options {
+  aspect-ratio: 1 / 1;
+  width: 20px;
+
+  cursor: pointer;
+
+  border: none;
+  background-color: hsla(0, 0%, 0%, 0);
+
+  background-image: url('./assets/icon-vertical-ellipsis.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+
+  margin: 0 24px 0 0;
+}
+
+.header-options-list {
+  z-index: 999;
+  position: absolute;
+  top: 52px;
+  right: 24px;
+
+  display: grid;
+  gap: 16px;
+
+  width: 192px;
+
+  border-radius: 8px;
+
+  background-color: var(--white);
+  box-shadow: 0px 4px 6px 0px rgba(54, 78, 126, 0.1);
+
+  padding: 16px;
+}
+
+.header-options-list > li {
+  list-style: none;
+}
+
+.edit-board {
+  color: var(--medium-grey);
+}
+
+.delete-board {
+  color: var(--red);
+}
+
 /* Aside */
 .aside {
   width: 300px;
