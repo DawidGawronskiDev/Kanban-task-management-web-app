@@ -22,6 +22,26 @@ const createHeader = (board) => {
     root.appendChild(createPopupTaskAdd(board))
   )
 
+  const headerOptionsContainer = createElement('div', ['options-container'])
+  headerElement.appendChild(headerOptionsContainer)
+
+  const headerOptions = createElement('button', ['toggle-options'])
+  headerOptionsContainer.appendChild(headerOptions)
+
+  const headerOptionsList = createElement('ul', ['header-options-list'])
+  headerOptionsList.dataset.visible = false
+  headerOptionsContainer.appendChild(headerOptionsList)
+
+  const editBoard = createElement('li', ['edit-board', 'body-l'])
+  editBoard.innerHTML = 'Edit Board'
+  headerOptionsList.appendChild(editBoard)
+
+  const deleteBoard = createElement('li', ['delete-board', 'body-l'])
+  deleteBoard.innerHTML = 'Delete Board'
+  headerOptionsList.appendChild(deleteBoard)
+
+  headerOptions.addEventListener('click', () => console.log('Hi!'))
+
   return headerElement
 }
 
